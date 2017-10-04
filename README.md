@@ -13,6 +13,23 @@ Please see the docs
 1. Clone the repo
 2. Navigate into the directory and build: `cd smarter-balanced-item-viewer && mvn clean install`
 
+## Docker
+itemviewerserviceapp images include content and itemviewerservicecode do not. 
+
+### add context path
+By default, item viewer service context path will be /itemviewerservice
+To change to preview, pass environment variable CATALINA_OPTS="-DIVSRoot=/preview"
+
+### Change memory 
+JAVA_OPTS='-Xmx1g' 
+
+### Content Volume
+-v /your/content/:/home/tomcat7/content
+
+## Reloading Items
+
+To reload all items in item viewer service, call `Pages/API/content/reload`.
+
 ## Loading Items
 
 The Item Viewer Service supports loading individual items or grouped performance task items.
@@ -33,6 +50,9 @@ An optional url parameter can be specified to scroll to a specific item in a per
 
 ### Optional, Readonly Mode
 An optional url parameter can be specified to make the rendered item readonly. By default, readOnly is set to false. To enable readonly, use `readOnly` parameter and by setting to `false` or `true`. Example `/items?ids=187-1435&readOnly=true`
+
+### Optional, Load from directory
+An optional url parameter can be specified to load and or reload from a specific directory using an absolute path to the content. Example to reload items in /home/tomcat7/temp1 use `loadFrom` parameter. Example request `/items?id=187-1432&loadFrom=/home/tomact7temp1`. This will overwrite any existing keys with the specified content in the singleton.
 
 ### Optional, Specifying Accessibility Codes
 The optional accessibility codes are specified using the `isaap` url parameter.
