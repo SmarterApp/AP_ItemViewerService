@@ -36,6 +36,12 @@ deploy:
     script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh
     on:
         tags: true
+  - provider: releases
+    api_key: $GIT_API_KEY
+    file: docker/itemviewerservice.war
+    skip_cleanup: true
+    on:
+      tags: true
   - provider: script
     skip_cleanup: true
     script: ./DeployScripts/code_docker_deploy.sh 
@@ -46,8 +52,3 @@ deploy:
     script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh
     on:
       branch: master
-  - provider: script
-    skip_cleanup: true
-    script: ./DeployScripts/code_docker_deploy.sh 
-    on:
-      branch: feat/docker-tomcat
