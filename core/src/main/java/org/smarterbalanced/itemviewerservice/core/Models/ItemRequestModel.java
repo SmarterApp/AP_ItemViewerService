@@ -39,7 +39,7 @@ public class ItemRequestModel {
   private void buildAccommodations() {
     HashMap<String, List<String>> accomms = new HashMap<>();
     for (String code: this.featureCodes) {
-      if(StringUtils.isNullOrEmpty(code)){
+      if (StringUtils.isNullOrEmpty(code)) {
         continue;
       }
 

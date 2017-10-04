@@ -57,5 +57,8 @@ public class TokenModel {
   }
 
   @JsonProperty("loadFrom")
-  public String getLoadFrom(){ return this.loadFrom;}
+  public String getLoadFrom() {
+    return this.loadFrom;
+  }
+
 }
