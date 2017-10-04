@@ -14,9 +14,9 @@ Please see the docs
 2. Navigate into the directory and build: `cd smarter-balanced-item-viewer && mvn clean install`
 
 ## Docker
-itemviewerserviceapp images include content and itemviewerservicecode do not. 
+itemviewerserviceapp images include content and itemviewerservicecode does not. 
 
-### add context path
+### Add context path
 By default, item viewer service context path will be /itemviewerservice
 To change to preview, pass environment variable CATALINA_OPTS="-DIVSRoot=/preview"
 
