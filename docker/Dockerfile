@@ -1,4 +1,4 @@
-FROM tomcat:8.0.45-jre7
+FROM tomcat:7-jre7
 
 ARG source=content/
 ARG contentStore=/home/tomcat7/content/

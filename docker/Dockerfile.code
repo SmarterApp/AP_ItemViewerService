@@ -1,4 +1,4 @@
-FROM tomcat:8.0.45-jre7
+FROM tomcat:7-jre7
 
 WORKDIR /usr/local/tomcat/
 

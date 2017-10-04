@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.smarterbalanced.itemviewerservice</groupId>
         <artifactId>itemviewerservice</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
     </parent>
 
     <!-- Version variables -->
