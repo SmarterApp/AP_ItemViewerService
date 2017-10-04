@@ -106,7 +106,7 @@
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>
             <artifactId>iris</artifactId>
-            <version>3.2.2.RELEASE</version>
+            <version>3.2.4</version>
             <type>war</type>
         </dependency>
     </dependencies>
@@ -130,7 +130,6 @@
                                 <exclude>WEB-INF/web.xml</exclude>
                                 <exclude>WEB-INF/classes/settings-mysql.xml</exclude>
                                 <exclude>/IrisPages/</exclude>
-                                <exclude>/Scripts/client.js</exclude>
                             </excludes>
                         </overlay>
                     </overlays>

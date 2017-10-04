@@ -4,10 +4,7 @@
         <title>Item: ${item}</title>
         <script src="../Scripts/Libraries/jquery/jquery-1.10.2.min.js" type="text/javascript"></script>
         <script src="../Scripts/Utilities/util_xdm.js" type="text/javascript"></script>
-        <script src="../Scripts/client.js" type="text/javascript"></script>
-        <tds:ScriptLink source="~/Scripts/Libraries/jquery/jquery-1.10.2.min.js" type="text/javascript"></tds:ScriptLink>
-        <tds:ScriptLink source="~/Scripts/Utilities/util_xdm.js" type="text/javascript"></tds:ScriptLink>
-        <tds:ScriptLink source="~/Scripts/client.js" type="text/javascript"></tds:ScriptLink>
+        <script src="../Scripts/iris.client.js" type="text/javascript"></script>        
         <!-- Styling for this page only and not for IRiS interface. -->
         <tds:CSSLink href="~/IrisStyles/style.css" media="screen" type="text/css" rel="stylesheet" />
         <tds:CSSLink href="~/IrisStyles/pagenavi-css.css" media="screen" type="text/css" rel="stylesheet" />
@@ -23,7 +20,7 @@
                 var token = '${token}';
                 var scrollToDivId = '${scrollToDivId}';
                 var readOnly = ${readOnly};
-                IRiS.loadToken(vendorId, token, scrollToDivId, readOnly);
+                IRiS.loadToken(vendorId, token, readOnly, scrollToDivId);
             };
         </script>
         <style>

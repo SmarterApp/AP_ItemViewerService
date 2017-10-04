@@ -1,5 +1,6 @@
 package org.smarterbalanced.itemviewerservice.core.Models;
 
+import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ public class ItemRequestModel {
   private final String[] items;
   private final String[] featureCodes;
   private List<AccommodationModel> accommodations;
+  private final String loadFrom;
   private static final Logger logger = LoggerFactory.getLogger(ItemRequestModel.class);
 
   /**
@@ -27,15 +29,20 @@ public class ItemRequestModel {
    * @param items         The items requested
    * @param featureCodes Accessibility feature codes
    */
-  public ItemRequestModel(String[] items, String[] featureCodes) {
+  public ItemRequestModel(String[] items, String[] featureCodes, String loadFrom) {
     this.items = items;
     this.featureCodes = featureCodes;
     this.accommodations = new ArrayList<>();
+    this.loadFrom = loadFrom;
   }
 
   private void buildAccommodations() {
     HashMap<String, List<String>> accomms = new HashMap<>();
     for (String code: this.featureCodes) {
+      if(StringUtils.isNullOrEmpty(code)){
+        continue;
+      }
+
       String type = AccommodationTypeLookup.getType(code);
       //If type is null then the accommodation is not found. Do not add it to the list.
       if (type != null) {
@@ -53,6 +60,7 @@ public class ItemRequestModel {
                 + code);
       }
     }
+
     for (Map.Entry<String, List<String>> entry: accomms.entrySet()) {
       String type = entry.getKey();
       List<String> codes = entry.getValue();
@@ -71,7 +79,7 @@ public class ItemRequestModel {
     ObjectMapper mapper = new ObjectMapper();
     buildAccommodations();
     String json;
-    TokenModel token = new TokenModel(this.items, this.accommodations);
+    TokenModel token = new TokenModel(this.items, this.accommodations, this.loadFrom);
     try {
       json = mapper.writer().writeValueAsString(token);
     } catch (Exception e) {

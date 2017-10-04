@@ -1,8 +1,0 @@
-version: '3'
-services:
-  ivs:
-    build: .
-    ports:
-    - "8074:8080"
-    volumes:
-       - /c/content:/home/tomcat7/content
