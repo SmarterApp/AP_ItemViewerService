@@ -1,11 +1,12 @@
-FROM tomcat:8.0.45-jre7
+FROM tomcat:7-jre7
 
 WORKDIR /usr/local/tomcat/
+ARG contextName=ROOT
 
 COPY context.xml ./conf
-COPY server.xml ./conf
 RUN  rm -rf webapps/*
 
 COPY itemviewerservice.war ./webapps
+RUN mv ./webapps/itemviewerservice.war ./webapps/$contextName.war
 
 ENTRYPOINT ["catalina.sh", "run"]

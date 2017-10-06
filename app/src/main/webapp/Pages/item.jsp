@@ -2,14 +2,14 @@
 <html>
     <head>
         <title>Item: ${item}</title>
-        <script src="../Scripts/Libraries/jquery/jquery-1.10.2.min.js" type="text/javascript"></script>
-        <script src="../Scripts/Utilities/util_xdm.js" type="text/javascript"></script>
-        <script src="../Scripts/iris.client.js" type="text/javascript"></script>        
+        <script src="${pageContext.request.contextPath}/Scripts/Libraries/jquery/jquery-1.10.2.min.js" type="text/javascript"></script>
+        <script src="${pageContext.request.contextPath}/Scripts/Utilities/util_xdm.js" type="text/javascript"></script>
+        <script src="${pageContext.request.contextPath}/Scripts/iris.client.js" type="text/javascript"></script>
         <!-- Styling for this page only and not for IRiS interface. -->
-        <tds:CSSLink href="~/IrisStyles/style.css" media="screen" type="text/css" rel="stylesheet" />
-        <tds:CSSLink href="~/IrisStyles/pagenavi-css.css" media="screen" type="text/css" rel="stylesheet" />
-        <tds:CSSLink href="~/IrisStyles/jd.css" media="screen" type="text/css" rel="stylesheet" />
-        <tds:CSSLink href="~/IrisStyles/jd_002.css" media="screen" type="text/css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/style.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/pagenavi-css.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/jd.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/jd_002.css">
 
         <script type="text/javascript">
             function loadItem(){
