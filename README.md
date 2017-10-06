@@ -3,7 +3,7 @@
 # Smarter Balanced Item Viewer Service 
 Renders items using Item Render as a service.
 
-For docker versions, please see [dockerhub](https://hub.docker.com/r/osucass/itemviewerservice/tags/)
+For docker versions, please see [dockerhub](https://hub.docker.com/r/osucass/ap_itemviewerservice/tags/)
 
 Please see the docs
 
