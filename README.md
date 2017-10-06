@@ -3,7 +3,7 @@
 # Smarter Balanced Item Viewer Service 
 Renders items using Item Render as a service.
 
-For docker versions, please see [dockerhub](https://hub.docker.com/r/osucass/itemviewerserviceapp/tags/)
+For docker versions, please see [dockerhub](https://hub.docker.com/r/osucass/itemviewerservice/tags/)
 
 Please see the docs
 
@@ -14,11 +14,11 @@ Please see the docs
 2. Navigate into the directory and build: `cd smarter-balanced-item-viewer && mvn clean install`
 
 ## Docker
-itemviewerserviceapp images include content and itemviewerservicecode does not. 
+tag iat has a different context path with no content
+tag content has practice test content items
 
 ### Add context path
-By default, item viewer service context path will be /itemviewerservice
-To change to preview, pass environment variable CATALINA_OPTS="-DIVSRoot=/preview"
+Default path is / and using tag iat is iatpreview
 
 ### Change memory 
 JAVA_OPTS='-Xmx1g' 
@@ -52,7 +52,7 @@ An optional url parameter can be specified to scroll to a specific item in a per
 An optional url parameter can be specified to make the rendered item readonly. By default, readOnly is set to false. To enable readonly, use `readOnly` parameter and by setting to `false` or `true`. Example `/items?ids=187-1435&readOnly=true`
 
 ### Optional, Load from directory
-An optional url parameter can be specified to load and or reload from a specific directory using an absolute path to the content. Example to reload items in /home/tomcat7/temp1 use `loadFrom` parameter. Example request `/items?id=187-1432&loadFrom=/home/tomact7temp1`. This will overwrite any existing keys with the specified content in the singleton.
+An optional url parameter can be specified to load and or reload from a specific directory using an absolute path to the content. Example to reload items in /home/tomcat7/temp1 use `loadFrom` parameter. Example request `/items?id=187-1432&loadFrom=/home/tomact7/temp1`. This will overwrite any existing keys with the specified content in the singleton.
 
 ### Optional, Specifying Accessibility Codes
 The optional accessibility codes are specified using the `isaap` url parameter.

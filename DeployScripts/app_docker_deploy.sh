@@ -6,6 +6,5 @@ mkdir content
 wget -q "$CONTENT_PACKAGE_URL" -O content.zip
 unzip -o content.zip -d content/ &> /dev/null
 rm content.zip 
-docker build -t itemviewerserviceapp .
-docker tag itemviewerserviceapp:latest osucass/itemviewerserviceapp:$BRANCH
-docker push osucass/itemviewerserviceapp:$BRANCH
+docker build -t osucass/itemvieap_itemviewerservicewerservice:$BRANCH-content .
+docker push osucass/ap_itemviewerservice:$BRANCH-content
