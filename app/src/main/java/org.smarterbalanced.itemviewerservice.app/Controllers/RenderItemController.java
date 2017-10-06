@@ -35,14 +35,18 @@ public class RenderItemController {
                                  @RequestParam(value = "readOnly",
                                          required = false,
                                          defaultValue = "false"
-                                 ) boolean readOnly
+                                 ) boolean readOnly,
+                                 @RequestParam(value = "loadFrom",
+                                         required =  false,
+                                         defaultValue = "")
+                                           String loadFrom
   ) {
     //Request is in the format
     String[] codes = accommodationCodes.split(";");
     String[] itemArr = {itemId};
     //The item model can take in multiple items.
     // In our case we just need to load 1 item so we place the item requested into an array.
-    ItemRequestModel item = new ItemRequestModel(itemArr, codes);
+    ItemRequestModel item = new ItemRequestModel(itemArr, codes, loadFrom);
 
     String token = item.generateJsonToken();
     ModelAndView model = new ModelAndView();
@@ -76,11 +80,15 @@ public class RenderItemController {
                                  @RequestParam(value = "readOnly",
                                          required = false,
                                          defaultValue = "false"
-                                 ) boolean readOnly
+                                 ) boolean readOnly,
+                                 @RequestParam(value = "loadFrom",
+                                          required =  false,
+                                 defaultValue = "")
+                                 String loadFrom
   ) {
     //Request is in the format
     String[] codes = accommodationCodes.split(";");
-    ItemRequestModel item = new ItemRequestModel(itemIds, codes);
+    ItemRequestModel item = new ItemRequestModel(itemIds, codes, loadFrom);
     final String token = item.generateJsonToken();
     String scrollToDivId = "";
     if (!scrollToId.equals("")) {

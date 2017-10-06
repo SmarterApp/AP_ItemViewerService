@@ -2,6 +2,8 @@
 set -ev
 
 cd docker/
-docker build -f Dockerfile.code -t itemviewerservice .
-docker tag itemviewerservice:latest osucass/itemviewerservicecode:$BRANCH
-docker push osucass/itemviewerservicecode:$BRANCH
+docker build -f Dockerfile.code -t osucass/ap_itemviewerservice:$BRANCH .
+docker push osucass/ap_itemviewerservice:$BRANCH
+
+docker build -f Dockerfile.code --build-arg contextName=iatpreview -t osucass/ap_itemviewerservice:$BRANCH-iat .
+docker push osucass/ap_itemviewerservice:$BRANCH-iat
