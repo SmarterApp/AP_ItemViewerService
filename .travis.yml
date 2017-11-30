@@ -33,7 +33,7 @@ after_success:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh
+    script: ./DeployScripts/code_docker_deploy.sh
     on:
         tags: true
   - provider: releases
@@ -49,6 +49,6 @@ deploy:
       branch: dev
   - provider: script
     skip_cleanup: true
-    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh
+    script: ./DeployScripts/code_docker_deploy.sh
     on:
       branch: master
