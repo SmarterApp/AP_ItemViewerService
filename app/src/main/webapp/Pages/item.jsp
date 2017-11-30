@@ -6,10 +6,7 @@
         <script src="${pageContext.request.contextPath}/Scripts/Utilities/util_xdm.js" type="text/javascript"></script>
         <script src="${pageContext.request.contextPath}/Scripts/iris.client.js" type="text/javascript"></script>
         <!-- Styling for this page only and not for IRiS interface. -->
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/style.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/pagenavi-css.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/jd.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/jd_002.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/IrisStyles/iris.css">
 
         <script type="text/javascript">
             function loadItem(){
