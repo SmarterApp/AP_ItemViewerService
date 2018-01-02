@@ -4,7 +4,7 @@
   <groupId>org.smarterbalanced.itemviewerservice</groupId>
   <artifactId>itemviewerservice</artifactId>
   <packaging>pom</packaging>
-  <version>3.3.4.RELEASE</version>
+  <version>3.3.5.RELEASE</version>
   <name>itemviewerservice</name>
   <url>https://github.com/SmarterApp/AP_ItemViewerService</url>
 
@@ -48,7 +48,7 @@
     <connection>scm:git:https://github.com/SmarterApp/AP_ItemViewerService.git</connection>
     <developerConnection>scm:git:git://github.com/SmarterApp/AP_ItemViewerService.git</developerConnection>
     <url>https://github.com/SmarterApp/AP_ItemViewerService</url>
-    <tag>3.3.4-RELEASE</tag>
+    <tag>3.3.5-RELEASE</tag>
   </scm>
 
   <distributionManagement>
