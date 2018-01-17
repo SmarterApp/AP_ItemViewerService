@@ -45,7 +45,7 @@ public class SettingsReader {
       configInput = new FileInputStream(configLocation);
       properties.load(configInput);
       configInput.close();
-    } catch (IOException e) {
+    } catch (IOException exception) {
       logger.warn("Unable to load config file");
     }
     return properties.getProperty(key);
