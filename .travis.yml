@@ -18,7 +18,7 @@ before_script:
 
 script:
  - mvn clean install
- - mvn checkstyle:check
+#  - mvn checkstyle:check
 
 after_success:
  - docker --version
