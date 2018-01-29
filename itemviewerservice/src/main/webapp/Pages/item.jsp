@@ -39,7 +39,7 @@
     </head>
     <body>
         <div class="irisContainer">
-            <iframe id="irisWindow" src="${pageContext.request.contextPath}/" onload="loadItem()"></iframe>
+            <iframe id="irisWindow" src="${pageContext.request.contextPath}/IrisPages/itemRender.xhtml" onload="loadItem()"></iframe>
         </div>
     </body>
 </html>

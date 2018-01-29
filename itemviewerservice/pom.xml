@@ -5,7 +5,7 @@
     <artifactId>itemviewerservice</artifactId>
     <packaging>war</packaging>
     <name>itemviewerservice</name>
-    <version>3.3.5.RELEASE</version>
+    <version>3.4.0</version>
 
     <!-- Version variables -->
     <properties>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>
             <artifactId>iris</artifactId>
-            <version>3.3.5.RELEASE</version>
+            <version>3.4.0</version>
             <type>war</type>
         </dependency>
 
