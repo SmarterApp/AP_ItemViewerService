@@ -17,7 +17,7 @@ before_script:
 
 script:
   - cd itemviewerservice
-  - mvn clean install
+  - mvn -B clean install
 #  - mvn checkstyle:check
 
 after_success:
