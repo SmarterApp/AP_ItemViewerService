@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+
+	<!-- <entry key="student-sessiondb-jndi">java:/comp/env/jdbc/sessiondb</entry> -->
+	<entry key="DBDialect">MYSQL</entry>
+	<!-- Start Item Preview Settings -->
+	<entry key="tds.itemPreview.blackboxUrl">http://localhost/blackbox/</entry>
+	<entry key="tds.itemPreview.itemScoringUrl">http://localhost/ItemScoringServer/ItemScoring.axd</entry>
+	<entry key="tds.itemPreview.showDevTools">true</entry>
+	<entry key="tds.itemPreview.forceHttpContent">false</entry>
+	<entry key="tds.itemPreview.encryptPaths">false</entry>
+	<entry key="tds.itemPreview.resourceLookupPath">content/resources.json</entry>
+	<entry key="tds.itemPreview.readOnly">false</entry>
+	<entry key="tds.itemPreview.showLoading">false</entry>
+	<entry key="tds.itemPreview.ignorePassages">false</entry>
+	<entry key="tds.itemPreview.passageLayout"></entry>
+	<entry key="tds.itemPreview.configCache.minutes">0</entry>
+	<entry key="tds.itemPreview.configCache.id"></entry>
+	<entry key="iris.ContentPath">C:\content\</entry>
+	<!-- URL for the Dictionary API used for the Dictionary and Thesaurus accommodations -->
+	<entry key="iris.DictionaryUrl">url</entry>
+	<!-- End Item Preview Settings -->
+	<!-- Start BlackBox Settings -->
+	<!-- legacy settings -->
+	<entry key="BRFStyleTransformationRules">~/Shared/BRFTransformationRules/{0}_BRFTransformations.xml</entry>
+	<!-- item renderer settings -->
+	<entry key="tds.itemRenderer.urlResolverVersion">2</entry>
+	<entry key="tds.itemRenderer.supportHttpRanges">true</entry>
+	<entry key="tds.itemRenderer.denyHttpContent">false</entry>
+	<!-- NOTE: These override any settings ITS provides in JSON -->
+	<entry key="tds.itemRenderer.enableMathML">false</entry>
+	<entry key="tds.itemRenderer.enableBase64">false</entry>
+	<entry key="tds.itemRenderer.enableFeedback">false</entry>
+	<entry key="tds.itemRenderer.forceQTI">true</entry>
+	
+	<entry key="EncryptionKey">${tds.iris.EncryptionKey}</entry>
+	
+	<!-- End BlackBox Settings -->
+</properties>
