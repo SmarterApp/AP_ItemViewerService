@@ -3,6 +3,10 @@ jdk:
 - openjdk7
 sudo: required
 
+cache:
+  directories:
+  - $HOME/.m2
+
 install: 
   - travis_retry pip install --upgrade pip
   - export PATH=$PATH:$HOME/.local/bin
