@@ -2,13 +2,11 @@ package org.smarterbalanced.itemviewerservice.core.DiagnosticApi.Models;
 
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Models an item request.
@@ -17,6 +15,8 @@ public class ItemRequestModel {
 
   private final String[] items;
   private final String[] featureCodes;
+  private final String section;
+  private final String revision;
   private List<AccommodationModel> accommodations;
   private final String loadFrom;
   private static final Logger logger = LoggerFactory.getLogger(ItemRequestModel.class);
@@ -27,11 +27,13 @@ public class ItemRequestModel {
    * @param items         The items requested
    * @param featureCodes Accessibility feature codes
    */
-  public ItemRequestModel(String[] items, String[] featureCodes, String loadFrom) {
+  public ItemRequestModel(String[] items, String[] featureCodes, String section, String revision, String loadFrom) {
     this.items = items;
     this.featureCodes = featureCodes;
     this.accommodations = new ArrayList<>();
     this.loadFrom = loadFrom;
+    this.revision = revision;
+    this.section = section;
   }
 
   private void buildAccommodations() {
@@ -67,6 +69,17 @@ public class ItemRequestModel {
     }
   }
 
+  private void checkIsaapCodes(){
+      for (Map.Entry<String, String> entry : AccommodationDefaultTypeLookup.getDefaultTypes().entrySet()) {
+        if(!ArrayUtils.contains(this.featureCodes, entry.getKey())){
+            String codes = entry.getValue();
+            List<String> types = Collections.singletonList(entry.getKey());
+            AccommodationModel accommodation = new AccommodationModel(codes, types);
+            this.accommodations.add(accommodation);
+        }
+      }
+  }
+
   /**
    * Generate a json representation of the requested item and accommodations.
    * The token is in the format taken by the blackbox javascript.
@@ -76,6 +89,7 @@ public class ItemRequestModel {
   public String generateJsonToken() {
     ObjectMapper mapper = new ObjectMapper();
     buildAccommodations();
+    checkIsaapCodes();
     String json;
     TokenModel token = new TokenModel(this.items, this.accommodations, this.loadFrom);
     try {

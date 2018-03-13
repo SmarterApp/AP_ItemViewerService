@@ -30,6 +30,14 @@ public class RenderItemController {
                                  @RequestParam(value = "isaap", required = false,
                                          defaultValue = "")
                                          String accommodationCodes,
+                                 @RequestParam(value = "section",
+                                         required = false,
+                                         defaultValue = "")
+                                           String section,
+                                 @RequestParam(value = "revision",
+                                         required = false,
+                                         defaultValue = "")
+                                           String revision,
                                  @RequestParam(value = "readOnly",
                                          required = false,
                                          defaultValue = "false"
@@ -44,7 +52,7 @@ public class RenderItemController {
     String[] itemArr = {itemId};
     //The item model can take in multiple items.
     // In our case we just need to load 1 item so we place the item requested into an array.
-    ItemRequestModel item = new ItemRequestModel(itemArr, codes, loadFrom);
+    ItemRequestModel item = new ItemRequestModel(itemArr, codes, revision, section, loadFrom);
 
     String token = item.generateJsonToken();
     ModelAndView model = new ModelAndView();
@@ -75,6 +83,14 @@ public class RenderItemController {
                                          required = false,
                                          defaultValue = "")
                                          String accommodationCodes,
+                                 @RequestParam(value = "section",
+                                         required = false,
+                                         defaultValue = "")
+                                           String section,
+                                 @RequestParam(value = "revision",
+                                         required = false,
+                                         defaultValue = "")
+                                           String revision,
                                  @RequestParam(value = "readOnly",
                                          required = false,
                                          defaultValue = "false"
@@ -86,7 +102,7 @@ public class RenderItemController {
   ) {
     //Request is in the format
     String[] codes = accommodationCodes.split(";");
-    ItemRequestModel item = new ItemRequestModel(itemIds, codes, loadFrom);
+    ItemRequestModel item = new ItemRequestModel(itemIds, codes, revision, section, loadFrom);
     final String token = item.generateJsonToken();
     String scrollToDivId = "";
     if (!scrollToId.equals("")) {

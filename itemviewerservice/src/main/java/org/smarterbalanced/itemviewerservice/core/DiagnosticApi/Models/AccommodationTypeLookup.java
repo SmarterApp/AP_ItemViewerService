@@ -16,9 +16,11 @@ import java.util.Map;
  */
 public final class AccommodationTypeLookup {
   private static final Map<String, String> accommodationMap;
+  private static final Map<String, String> defaultAccommodations;
 
   static {
     accommodationMap = new HashMap<String, String>();
+    defaultAccommodations = new HashMap<String,String>();
 
     //American Sign Language
     accommodationMap.put("TDS_ASL0", "American Sign Language");
@@ -196,4 +198,5 @@ public final class AccommodationTypeLookup {
   public static String getType(String code) {
     return accommodationMap.get(code);
   }
+
 }
