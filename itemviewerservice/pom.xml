@@ -101,15 +101,7 @@
             <type>war</type>
         </dependency>
 
-        <!-- JUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Operating System Info -->
+           <!-- Operating System Info -->
         <dependency>
             <groupId>com.github.dblock</groupId>
             <artifactId>oshi-core</artifactId>
