@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 /**
  * REST API controller for rendering items.
@@ -48,7 +51,7 @@ public class RenderItemController {
                                            String loadFrom
   ) {
     //Request is in the format
-    String[] codes = accommodationCodes.split(";");
+    ArrayList<String> codes = new ArrayList<>(Arrays.asList(accommodationCodes.split(";")));
     String[] itemArr = {itemId};
     //The item model can take in multiple items.
     // In our case we just need to load 1 item so we place the item requested into an array.
@@ -101,7 +104,7 @@ public class RenderItemController {
                                  String loadFrom
   ) {
     //Request is in the format
-    String[] codes = accommodationCodes.split(";");
+    ArrayList<String> codes = new ArrayList<>(Arrays.asList(accommodationCodes.split(";")));
     ItemRequestModel item = new ItemRequestModel(itemIds, codes, revision, section, loadFrom);
     final String token = item.generateJsonToken();
     String scrollToDivId = "";

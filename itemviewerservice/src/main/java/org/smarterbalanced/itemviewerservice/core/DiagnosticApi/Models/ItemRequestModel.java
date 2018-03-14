@@ -6,6 +6,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -14,7 +15,7 @@ import java.util.*;
 public class ItemRequestModel {
 
   private final String[] items;
-  private final String[] featureCodes;
+  private final ArrayList<String> featureCodes;
   private final String section;
   private final String revision;
   private List<AccommodationModel> accommodations;
@@ -27,7 +28,7 @@ public class ItemRequestModel {
    * @param items         The items requested
    * @param featureCodes Accessibility feature codes
    */
-  public ItemRequestModel(String[] items, String[] featureCodes, String section, String revision, String loadFrom) {
+  public ItemRequestModel(String[] items, ArrayList<String> featureCodes, String section, String revision, String loadFrom) {
     this.items = items;
     this.featureCodes = featureCodes;
     this.accommodations = new ArrayList<>();
@@ -71,11 +72,9 @@ public class ItemRequestModel {
 
   private void checkIsaapCodes(){
       for (Map.Entry<String, String> entry : AccommodationDefaultTypeLookup.getDefaultTypes().entrySet()) {
-        if(!ArrayUtils.contains(this.featureCodes, entry.getKey())){
-            String codes = entry.getValue();
-            List<String> types = Collections.singletonList(entry.getKey());
-            AccommodationModel accommodation = new AccommodationModel(codes, types);
-            this.accommodations.add(accommodation);
+        if(!this.featureCodes.contains(entry.getKey())){
+            String defaultCode = entry.getKey();
+            featureCodes.add(defaultCode);
         }
       }
   }
@@ -88,8 +87,8 @@ public class ItemRequestModel {
    */
   public String generateJsonToken() {
     ObjectMapper mapper = new ObjectMapper();
-    buildAccommodations();
     checkIsaapCodes();
+    buildAccommodations();
     String json;
     TokenModel token = new TokenModel(this.items, this.accommodations, this.loadFrom);
     try {

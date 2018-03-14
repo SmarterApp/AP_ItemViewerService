@@ -30,6 +30,9 @@ public final class AccommodationTypeLookup {
     accommodationMap.put("TDS_APC_PSP", "Audio Playback Controls");
     accommodationMap.put("TDS_APC_SCRUBBER", "Audio Playback Controls");
 
+    //Audio TTS Adjustments
+
+
     //Braille
     accommodationMap.put("TDS_BT0", "BrailleType");
     accommodationMap.put("TDS_BT_EXN", "BrailleType");
