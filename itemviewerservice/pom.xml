@@ -5,7 +5,15 @@
     <artifactId>itemviewerservice</artifactId>
     <packaging>war</packaging>
     <name>itemviewerservice</name>
-    <version>3.4.0</version>
+    <version>3.5.0</version>
+    
+    <repositories>
+        <repository>
+        <id>org.opentestsystem</id>
+        <name>airdev-releases</name>
+        <url>https://airdev.artifactoryonline.com/airdev/libs-releases-local</url>
+        </repository>
+    </repositories>
 
     <!-- Version variables -->
     <properties>
@@ -20,7 +28,6 @@
     </properties>
 
     <dependencies>
-
 
         <!-- Newer version of JNA than is used in Iris
          This allows us to get system stats such as memory usage.-->
@@ -150,8 +157,6 @@
 
     </dependencies>
 
-
-
     <build>
         <finalName>itemviewerservice</finalName>
         <plugins>
@@ -177,7 +182,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <scm>
         <connection>scm:git:https://github.com/SmarterApp/AP_ItemViewerService.git</connection>

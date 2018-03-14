@@ -17,14 +17,14 @@ before_script:
 
 script:
   - cd itemviewerservice
-  - mvn clean install
+  - mvn -B clean install
 #  - mvn checkstyle:check
 
 after_success:
   - docker --version
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-  - mv app/target/itemviewerservice.war docker/
   - cd $TRAVIS_BUILD_DIR
+  - mv itemviewerservice/target/itemviewerservice.war docker/
   - chmod ugo+x DeployScripts/code_docker_deploy.sh
   - chmod ugo+x DeployScripts/app_docker_deploy.sh
   - chmod ugo+x DeployScripts/ecs_deploy.sh
