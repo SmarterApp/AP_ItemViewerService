@@ -1,6 +1,7 @@
 package org.smarterbalanced.itemviewerservice.core.DiagnosticApi.Models;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,11 +17,9 @@ import java.util.Map;
  */
 public final class AccommodationTypeLookup {
   private static final Map<String, String> accommodationMap;
-  private static final Map<String, String> defaultAccommodations;
 
   static {
     accommodationMap = new HashMap<String, String>();
-    defaultAccommodations = new HashMap<String,String>();
 
     //American Sign Language
     accommodationMap.put("TDS_ASL0", "American Sign Language");
@@ -31,7 +30,14 @@ public final class AccommodationTypeLookup {
     accommodationMap.put("TDS_APC_SCRUBBER", "Audio Playback Controls");
 
     //Audio TTS Adjustments
+    accommodationMap.put("TDS_TTSAA_Volume", "TTS Audio Adjustments");
+    accommodationMap.put("TDS_TTSAA_Pitch", "TTS Audio Adjustments");
+    accommodationMap.put("TDS_TTSAA_Rate", "TTS Audio Adjustments");
+    accommodationMap.put("TDS_TTSAA_SelectVP", "TTS Audio Adjustments");
 
+    // TTS Rules
+    accommodationMap.put("TDS_TTX_A203 - TTX", "Business Rules");
+    accommodationMap.put("TDS_TTSPause1", "TTS Pausing");
 
     //Braille
     accommodationMap.put("TDS_BT0", "BrailleType");
@@ -201,5 +207,29 @@ public final class AccommodationTypeLookup {
   public static String getType(String code) {
     return accommodationMap.get(code);
   }
+
+/**
+ * Looks up the code for a given type.
+ *
+ * @param type the code that is being looked up.
+ * @return the code that the code belongs to.
+ */
+  public static String getCode(String type) { return accommodationMap.get(type); }
+
+    /**
+     * Looks up the codes for a given type.
+     *
+     * @param type the code that is being looked up.
+     * @return the codes that the code belongs to.
+     */
+    public static ArrayList<String> getCodes(String type) {
+        ArrayList<String> keys = new ArrayList<>();
+        for (Map.Entry<String,String> entry : accommodationMap.entrySet()) {
+            if (entry.getValue().equals(type)) {
+                keys.add(entry.getKey());
+            }
+        }
+        return keys;
+    }
 
 }

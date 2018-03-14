@@ -28,14 +28,23 @@ public class ItemRequestModel {
    * @param items         The items requested
    * @param featureCodes Accessibility feature codes
    */
-  public ItemRequestModel(String[] items, ArrayList<String> featureCodes, String section, String revision, String loadFrom) {
+  public ItemRequestModel(String[] items, ArrayList<String> featureCodes, String loadFrom) {
     this.items = items;
     this.featureCodes = featureCodes;
     this.accommodations = new ArrayList<>();
     this.loadFrom = loadFrom;
-    this.revision = revision;
-    this.section = section;
+    this.revision = null;
+    this.section = null;
   }
+
+    public ItemRequestModel(String[] items, ArrayList<String> featureCodes, String section, String revision, String loadFrom) {
+        this.items = items;
+        this.featureCodes = featureCodes;
+        this.accommodations = new ArrayList<>();
+        this.loadFrom = loadFrom;
+        this.revision = revision;
+        this.section = section;
+    }
 
   private void buildAccommodations() {
     HashMap<String, List<String>> accomms = new HashMap<>();
@@ -70,7 +79,31 @@ public class ItemRequestModel {
     }
   }
 
-  private void checkIsaapCodes(){
+    /**
+     * Add conditional TTS Isaap codes found in AccommodationDefaultTypeLookup conditionalTypes
+     * If TTS Isaap code specified, then add all related TTS ISAAP codes
+     */
+    private void checkConditionalIsaapCodes(){
+        for(String code : AccommodationTypeLookup.getCodes("TTS")){
+            if(this.featureCodes.contains(code)){
+
+                for (Map.Entry<String, String> entry : AccommodationDefaultTypeLookup.getConditionalTypes().entrySet()) {
+                    if(!this.featureCodes.contains(entry.getKey())){
+                        String conditionalCode = entry.getKey();
+                        featureCodes.add(conditionalCode);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+
+/**
+ * Add default Isaap codes found in AccommodationDefaultTypeLookup
+ * If default Isaap codes not specified already, add them
+ */
+  private void checkDefaultIsaapCodes(){
       for (Map.Entry<String, String> entry : AccommodationDefaultTypeLookup.getDefaultTypes().entrySet()) {
         if(!this.featureCodes.contains(entry.getKey())){
             String defaultCode = entry.getKey();
@@ -87,7 +120,8 @@ public class ItemRequestModel {
    */
   public String generateJsonToken() {
     ObjectMapper mapper = new ObjectMapper();
-    checkIsaapCodes();
+    checkDefaultIsaapCodes();
+    checkConditionalIsaapCodes();
     buildAccommodations();
     String json;
     TokenModel token = new TokenModel(this.items, this.accommodations, this.loadFrom);
