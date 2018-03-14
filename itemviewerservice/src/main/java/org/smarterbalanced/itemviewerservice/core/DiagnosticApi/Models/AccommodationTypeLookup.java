@@ -17,9 +17,13 @@ import java.util.Map;
  */
 public final class AccommodationTypeLookup {
   private static final Map<String, String> accommodationMap;
+  private static final Map<String, String> defaultAccommodations;
+  private static final Map<String, String> conditionalAccommodations;
 
-  static {
+    static {
     accommodationMap = new HashMap<String, String>();
+    defaultAccommodations = new HashMap<String,String>();
+    conditionalAccommodations = new HashMap<String,String>();
 
     //American Sign Language
     accommodationMap.put("TDS_ASL0", "American Sign Language");
@@ -196,6 +200,25 @@ public final class AccommodationTypeLookup {
     accommodationMap.put("TDS_T0", "Tutorial");
     accommodationMap.put("TDS_T1", "Tutorial");
 
+    //Default Codes
+    defaultAccommodations.put("TDS_ITM1", "Item Tools Menu");
+    defaultAccommodations.put("TDS_APC_SCRUBBER", "Audio Playback Controls");
+    defaultAccommodations.put("TDS_APC_PSP", "Audio Playback Controls");
+    defaultAccommodations.put("TDS_T1", "Tutorial");
+    defaultAccommodations.put("TDS_F_S14", "Passage Font Size");
+    defaultAccommodations.put("TDS_FT_Verdana", "Font Type");
+
+    //Conditional Codes
+    //Audio TTS Adjustments
+    conditionalAccommodations.put("TDS_TTSAA_Volume", "TTS Audio Adjustments");
+    conditionalAccommodations.put("TDS_TTSAA_Pitch", "TTS Audio Adjustments");
+    conditionalAccommodations.put("TDS_TTSAA_Rate", "TTS Audio Adjustments");
+    conditionalAccommodations.put("TDS_TTSAA_SelectVP", "TTS Audio Adjustments");
+
+    // TTS Rules
+    conditionalAccommodations.put("TDS_TTX_A203 - TTX", "Business Rules");
+    conditionalAccommodations.put("TDS_TTSPause1", "TTS Pausing");
+
   }
 
   /**
@@ -216,20 +239,37 @@ public final class AccommodationTypeLookup {
  */
   public static String getCode(String type) { return accommodationMap.get(type); }
 
-    /**
-     * Looks up the codes for a given type.
-     *
-     * @param type the code that is being looked up.
-     * @return the codes that the code belongs to.
-     */
+  /**
+ * Looks up the codes for a given type.
+ *
+ * @param type the code that is being looked up.
+ * @return the codes that the code belongs to.
+ */
     public static ArrayList<String> getCodes(String type) {
         ArrayList<String> keys = new ArrayList<>();
-        for (Map.Entry<String,String> entry : accommodationMap.entrySet()) {
+        for (Map.Entry<String, String> entry : accommodationMap.entrySet()) {
             if (entry.getValue().equals(type)) {
                 keys.add(entry.getKey());
             }
         }
         return keys;
+    }
+
+    /**
+     * Returns the default accommodation/isaap types.
+     *
+     */
+    public static Map<String, String> getDefaultTypes() {
+        return defaultAccommodations;
+    }
+
+
+    /**
+     * Returns the default accommodation/isaap types.
+     *
+     */
+    public static Map<String, String> getConditionalTypes() {
+        return conditionalAccommodations;
     }
 
 }

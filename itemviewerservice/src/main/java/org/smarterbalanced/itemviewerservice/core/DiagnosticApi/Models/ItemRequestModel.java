@@ -2,11 +2,9 @@ package org.smarterbalanced.itemviewerservice.core.DiagnosticApi.Models;
 
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -80,14 +78,14 @@ public class ItemRequestModel {
   }
 
     /**
-     * Add conditional TTS Isaap codes found in AccommodationDefaultTypeLookup conditionalTypes
+     * Add conditional TTS Isaap codes found in AccommodationTypeLookup conditionalTypes
      * If TTS Isaap code specified, then add all related TTS ISAAP codes
      */
     private void checkConditionalIsaapCodes(){
         for(String code : AccommodationTypeLookup.getCodes("TTS")){
             if(this.featureCodes.contains(code)){
 
-                for (Map.Entry<String, String> entry : AccommodationDefaultTypeLookup.getConditionalTypes().entrySet()) {
+                for (Map.Entry<String, String> entry : AccommodationTypeLookup.getConditionalTypes().entrySet()) {
                     if(!this.featureCodes.contains(entry.getKey())){
                         String conditionalCode = entry.getKey();
                         featureCodes.add(conditionalCode);
@@ -100,11 +98,11 @@ public class ItemRequestModel {
 
 
 /**
- * Add default Isaap codes found in AccommodationDefaultTypeLookup
+ * Add default Isaap codes found in AccommodationTypeLookup
  * If default Isaap codes not specified already, add them
  */
   private void checkDefaultIsaapCodes(){
-      for (Map.Entry<String, String> entry : AccommodationDefaultTypeLookup.getDefaultTypes().entrySet()) {
+      for (Map.Entry<String, String> entry : AccommodationTypeLookup.getDefaultTypes().entrySet()) {
         if(!this.featureCodes.contains(entry.getKey())){
             String defaultCode = entry.getKey();
             featureCodes.add(defaultCode);
