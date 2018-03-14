@@ -97,11 +97,11 @@
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>
             <artifactId>iris</artifactId>
-            <version>3.4.0</version>
+            <version>3.5.0</version>
             <type>war</type>
         </dependency>
 
-           <!-- Operating System Info -->
+        <!-- Operating System Info -->
         <dependency>
             <groupId>com.github.dblock</groupId>
             <artifactId>oshi-core</artifactId>
