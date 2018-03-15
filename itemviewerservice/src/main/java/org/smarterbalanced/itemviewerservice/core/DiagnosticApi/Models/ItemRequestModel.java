@@ -98,7 +98,7 @@ public class ItemRequestModel {
 
 
 /**
- * Add default Isaap codes found in AccommodationTypeLookup
+ * Add default Isaap codes found in AccommodationTypeLookup defaultTypes
  * If default Isaap codes not specified already, add them
  */
   private void checkDefaultIsaapCodes(){
