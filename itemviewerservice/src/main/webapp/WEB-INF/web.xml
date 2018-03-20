@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:ivs-context.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>WEB-INF/faces-config.xml,WEB-INF/itempreview-faces-config.xml,/WEB-INF/iris-faces-config.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>appServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>appServlet</servlet-name>
+        <url-pattern>/Pages/API/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>appServlet</servlet-name>
+        <url-pattern>/API.axd/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>appServlet</servlet-name>
+        <url-pattern>/Pages/SpellEngine.axd/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>appServlet</servlet-name>
+        <url-pattern>/content/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>itemviewerservice</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/itemviewerservice-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>itemviewerservice</servlet-name>
+        <url-pattern>/logs</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>itemviewerservice</servlet-name>
+        <url-pattern>/item/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>itemviewerservice</servlet-name>
+        <url-pattern>/items</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>itemviewerservice</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>itemviewerservice</servlet-name>
+        <url-pattern>/statusLocal</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>itemviewerservice</servlet-name>
+        <url-pattern>/reload</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>rendererServlet</servlet-name>
+        <servlet-class>tds.itemrenderer.webcontrols.rendererservlet.RendererServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rendererServlet</servlet-name>
+        <url-pattern>/rs/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ResourceHandler</servlet-name>
+        <servlet-class>tds.itemrenderer.web.ResourceHandler</servlet-class>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ResourceHandler</servlet-name>
+        <url-pattern>/Pages/API/Resources.axd/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SoundCueHandler</servlet-name>
+        <servlet-class>tds.student.web.handlers.SoundCueHandler</servlet-class>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SoundCueHandler</servlet-name>
+        <url-pattern>/Pages/API/SoundCue.axd/*</url-pattern>
+    </servlet-mapping>
+    <context-param>
+        <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>client</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>resources.application</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Tell the runtime where we are in the project development
+            lifecycle.  Valid values are:
+            Development, UnitTest, SystemTest, or Production.
+            The runtime will display helpful hints to correct common mistakes
+            when the value is Development.
+        </description>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+        <param-value>/WEB-INF/classes/taglib.xml;</param-value>
+    </context-param>
+    <listener>
+        <description>sessionListener</description>
+        <listener-class>AIR.Common.Web.Session.SessionListener</listener-class>
+    </listener>
+    <listener>
+        <description>contextTrackerListener</description>
+        <listener-class>org.smarterbalanced.itemviewerservice.web.backing.TDSApplication</listener-class>
+    </listener>
+
+    <!-- All filters -->
+    <!-- This filter creates a proxy for the request object. It needs to precede requestInitializerFilter -->
+    <filter>
+        <filter-name>requestInitializerFilter</filter-name>
+        <filter-class>AIR.Common.Web.Session.HttpRequestLoggerInitializerFilter</filter-class>
+        <init-param>
+            <param-name>prefix</param-name>
+            <param-value>testadmin</param-value>
+        </init-param>
+
+        <!-- If this parameter is true, (or anything besides "false" or missing), a request proxy is generated that permits reading the input data stream multiple times. This parameter is ignored unless DEBUG
+            level logging is in effect for HttpRequestLoggerInitializerFilter -->
+        <init-param>
+            <param-name>LogRequestBodies</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestInitializerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- This filter needs to follow requestInitializerFilter if used. It should precede all other filters. We need this to set Request / Response as a ThreadLocal object. -->
+    <filter>
+        <filter-name>contextInitializerFilter</filter-name>
+        <filter-class>AIR.Common.Web.Session.HttpContextInitializerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>contextInitializerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>caseinsensitiveFilter</filter-name>
+        <filter-class>AIR.Common.Web.Session.CaseInsensitiveFileNameFilter</filter-class>
+        <init-param>
+            <param-name>extensionsToFilter</param-name>
+            <param-value>png|gif|jpeg|jpg|bmp|js|css</param-value>
+        </init-param>
+        <init-param>
+            <param-name>extensionsMapping</param-name>
+            <param-value>aspx=xhtml|</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>caseinsensitiveFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- SB-483 -->
+    <filter>
+        <filter-name>requestContextFilter</filter-name>
+        <filter-class>org.springframework.web.filter.RequestContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestContextFilter</filter-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </filter-mapping>
+
+    <context-param>
+        <param-name>org.apache.myfaces.WRAP_SCRIPT_CONTENT_WITH_XML_COMMENT_TAG</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <welcome-file-list>
+        <welcome-file>IrisPages/itemRender.xhtml</welcome-file>
+    </welcome-file-list>
+    <display-name>Student</display-name>
+</web-app>

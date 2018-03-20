@@ -3,11 +3,12 @@ jdk:
 - openjdk7
 sudo: required
 
+cache:
+  directories:
+  - $HOME/.m2
+
 install: 
-  - travis_retry pip install --upgrade pip
   - export PATH=$PATH:$HOME/.local/bin
-  - python --version
- 
 
 services:
  - docker
@@ -17,18 +18,18 @@ before_script:
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
 
 script:
- - mvn clean install
- - mvn checkstyle:check
+  - cd itemviewerservice
+  - mvn -B clean install
+#  - mvn checkstyle:check
 
 after_success:
- - docker --version
- - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
- - mv app/target/itemviewerservice.war docker/
- - cd $TRAVIS_BUILD_DIR
- - chmod ugo+x DeployScripts/code_docker_deploy.sh
- - chmod ugo+x DeployScripts/app_docker_deploy.sh
- - chmod ugo+x DeployScripts/ecs_deploy.sh
-
+  - docker --version
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  - cd $TRAVIS_BUILD_DIR
+  - mv itemviewerservice/target/itemviewerservice.war docker/
+  - chmod ugo+x DeployScripts/code_docker_deploy.sh
+  - chmod ugo+x DeployScripts/app_docker_deploy.sh
+  - chmod ugo+x DeployScripts/ecs_deploy.sh
 
 deploy:
   - provider: script
@@ -38,7 +39,8 @@ deploy:
         tags: true
   - provider: releases
     api_key: $GIT_API_KEY
-    file: docker/itemviewerservice.war
+    file: 
+      - docker/itemviewerservice.war
     skip_cleanup: true
     on:
       tags: true

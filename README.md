@@ -66,6 +66,33 @@ It is good practice to always URL encode the list of ISAAP codes.
 For a full list of feature codes please refer to the accessibility feature code
 [documentation](http://www.smarterapp.org/documents/ISAAP-AccessibilityFeatureCodes.pdf).
 
+#### Conditional and Default Acessibility `isaap` Codes
+*Default Codes*
+Default isaap codes should be inserted if not specified. This is to share logic as much as possible.
+The following codes are default codes
+```
+TDS_ITM1
+TDS_APC_SCRUBBER
+TDS_APC_PSP
+TDS_T1
+TDS_F_S14TDS_FT_Verdana
+TDS_ITM1
+TDS_APC_SCRUBBER
+TDS_APC_PSP
+TDS_T1
+TDS_F_S14TDS_FT_Verdana
+```
+*Conditional Codes*
+For Text-To-Speech, if TTS is specified using any of the following codes: `TDS_TTS_Stim, TDS_TTS_Item, or TDS_TTS_Stim&TDS_TTS_Item`.
+Then insert the following options:
+```
+TDS_TTSAA_Volume - TTS Audio Adjustments
+TDS_TTSAA_Pitch - TTS Audio Adjustments
+TDS_TTSAA_Rate -TTS Audio Adjustments
+TDS_TTSAA_SelectVP - TTS Audio Adjustments
+TDS_TTX_A203 - TTX Business Rules
+TDS_TTSPause1 - TTS Pausing
+```
 ### Examples
 Loading item 187-856 with the yellow on blue color contrast and print zoom level 4 accessibility options.  
 `http://itemviewerservice.example/item/187-856?isaap=TDS_CCYellowB;TDS_PS_L4`
