@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
 
 /**
  * REST API controller for rendering items.
@@ -39,8 +43,11 @@ public class RenderItemController {
                                          defaultValue = "")
                                            String loadFrom
   ) {
-    //Request is in the format
-    String[] codes = accommodationCodes.split(";");
+    //Request is in the format items, isaap
+    //Remove duplicates using a HashSet
+    HashSet<String> codeSet = new HashSet<>(Arrays.asList(accommodationCodes.split(";")));
+    //Pass isaap codes to ItemRequestModel to add accommodations
+    ArrayList<String> codes = new ArrayList<>(codeSet);
     String[] itemArr = {itemId};
     //The item model can take in multiple items.
     // In our case we just need to load 1 item so we place the item requested into an array.
@@ -85,7 +92,10 @@ public class RenderItemController {
                                  String loadFrom
   ) {
     //Request is in the format
-    String[] codes = accommodationCodes.split(";");
+    //Remove duplicates using a HashSet
+    HashSet<String> codeSet = new HashSet<>(Arrays.asList(accommodationCodes.split(";")));
+    //Pass isaap codes to ItemRequestModel to add accommodations
+    ArrayList<String> codes = new ArrayList<>(codeSet);
     ItemRequestModel item = new ItemRequestModel(itemIds, codes, loadFrom);
     final String token = item.generateJsonToken();
     String scrollToDivId = "";
