@@ -8,9 +8,7 @@ cache:
   - $HOME/.m2
 
 install: 
-  - travis_retry pip install --upgrade pip
   - export PATH=$PATH:$HOME/.local/bin
-  - python --version
 
 services:
  - docker
@@ -43,7 +41,6 @@ deploy:
     api_key: $GIT_API_KEY
     file: 
       - docker/itemviewerservice.war
-      - itemviewerservice/target/itemviewerservice-classes.jar
     skip_cleanup: true
     on:
       tags: true
