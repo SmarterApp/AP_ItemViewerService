@@ -3,7 +3,7 @@ package org.smarterbalanced.itemviewerservice.core.Models;
 import com.sun.org.apache.xpath.internal.operations.Equals;
 import org.junit.Before;
 import org.junit.Test;
-import org.smarterbalanced.itemviewerservice.core.DiagnosticApi.Models.ItemRequestModel;
+import tds.irisshared.models.ItemRequestModel;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
