@@ -49,3 +49,9 @@ deploy:
     script: ./DeployScripts/code_docker_deploy.sh
     on:
       branch: master
+  - provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
+    on:
+      tags: true
+
