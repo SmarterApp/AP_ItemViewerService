@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>/home/tomcat7/itemviewerservice.log</file>
+        <file>logs/itemviewerservice.log</file>
         <append>true</append>
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
