@@ -5,7 +5,7 @@
     <artifactId>itemviewerservice</artifactId>
     <packaging>war</packaging>
     <name>itemviewerservice</name>
-    <version>3.6.4</version>
+    <version>3.6.4.TIMS</version>
     
     <repositories>
         <repository>
