@@ -32,7 +32,7 @@
         <level value="${log4j.xml.AppLogLevel}" />
     </logger>
     <logger name="org.smarterbalanced">
-        <level value ="debug" />
+        <level value ="INFO" />
     </logger>
 
     <!-- 3rdparty Loggers -->

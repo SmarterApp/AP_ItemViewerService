@@ -18,7 +18,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.smarterbalanced.itemviewerservice" level="ALL" >
+    <logger name="org.smarterbalanced.itemviewerservice" level="INFO" >
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
     </logger>
