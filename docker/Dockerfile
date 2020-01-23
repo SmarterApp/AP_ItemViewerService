@@ -15,3 +15,4 @@ COPY itemviewerservice.war ./webapps
 RUN mv ./webapps/itemviewerservice.war ./webapps/$contextName.war
 
 ENTRYPOINT ["catalina.sh", "run"]
+
