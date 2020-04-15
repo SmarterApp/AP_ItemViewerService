@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans" xmlns:jee="http://www.springframework.org/schema/jee"
+             xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <annotation-driven />
+    <context:annotation-config />
+
+    <context:property-placeholder ignore-unresolvable="true" order="10" local-override="true" />
+
+    <context:property-placeholder location="classpath:settings-mysql.xml" ignore-unresolvable="true" order="900" local-override="true" />
+
+    <context:property-placeholder ignore-unresolvable="true" ignore-resource-not-found="true" order="110" local-override="true"
+                                  location="${student-override-properties:file:///${user.home}/student-settings.xml}" />
+
+    <beans:bean id="iTrClient" class="tds.irisshared.data.IrisTrClient" />
+    <beans:import resource="classpath:opentestsystem.shared.common-context-module.xml" />
+    <beans:import resource="classpath:opentestsystem.shared.security-context-module.xml" />
+    <beans:import resource="classpath:opentestsystem.shared.web-context-module.xml" />
+    <beans:import resource="classpath:opentestsystem.itemrenderer.xml" />
+    <beans:import resource="classpath:opentestsystem.spellcheck-context-module.xml" />
+    <beans:import resource="securityContext.xml" />
+    <!-- TODO Shiva: Is this Spring complaining here because it cannot find the definition for appSettings locally even though it has been defined at another location? This does seem to work currently when
+        run. -->
+
+    <!-- ANSWER (Dan): The error marker here is due to incomplete functionality of the Eclipse parser for Spring configuration files. There is no actual error. This is Eclipse complaining because it's Spring
+        XML parser doesn't understand imports. This same incantation is being used to set all of the properties in appSettings, so if something isn't working here, it is because either the "beans:import" or "context:property-placeholder"
+        elements aren't structured right. -->
+
+    <beans:bean factory-bean="appSettings" factory-method="updateProperties" lazy-init="false" id="test-reg-url-dependency">
+        <beans:constructor-arg>
+            <util:map map-class="java.util.HashMap">
+                <beans:entry key="iris.ContentPath" value="${iris.ContentPath}" />
+                <beans:entry key="iris.DictionaryUrl" value="${iris.DictionaryUrl}" />
+            </util:map>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <!-- Root Context: defines shared resources visible to all other web components -->
+    <!-- TDSSettings bean. This gives access to clientname and any other info such as session type etc. -->
+    <beans:bean id="tdsSettings" class="TDS.Shared.Configuration.TDSSettings" scope="prototype" />
+    <beans:bean id="configurationService" class="tds.dll.common.performance.services.impl.ConfigurationServiceImpl" scope="prototype" />
+
+    <context:component-scan base-package="tds.irisshared.repository" />
+    <context:component-scan base-package="tds.student.sql.singletons" />
+    <context:component-scan base-package="tds.student.services">
+        <context:exclude-filter type="aspectj" expression="tds.student.services.remote.impl.RemoteExamineeNoteServiceImpl"/>
+    </context:component-scan>
+    <context:component-scan base-package="tds.student.web" />
+    <context:component-scan base-package="tds.student.configuration" />
+    <context:component-scan base-package="tds.itemscoringengine" />
+
+    <beans:bean id="iTDSLogger" class="tds.iris.logger.IrisLogger" scope="singleton" />
+    <beans:bean id="iContentBuilder" class="tds.irisshared.content.ContentBuilder" scope="singleton" />
+    <beans:bean id="iContentLocation" class="tds.irisshared.content.ContentLocation" scope="prototype"/>
+
+    <!-- HTTP web helper -->
+    <beans:bean id="httpWebHelper" class="AIR.Common.Web.HttpWebHelper" />
+
+
+    <beans:bean id="scoringMaster" class="tds.itemscoringengine.ItemScorerManagerImpl" scope="singleton" destroy-method="shutdown">
+        <beans:constructor-arg>
+            <beans:map>
+                <beans:entry key="mc">
+                    <beans:bean class="tds.itemscoringengine.itemscorers.MCItemScorer" scope="prototype" />
+                </beans:entry>
+                <beans:entry key="ms">
+                    <beans:bean class="tds.itemscoringengine.itemscorers.MCItemScorer" scope="prototype" />
+                </beans:entry>
+                <beans:entry key="mi">
+                    <beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer" scope="prototype" />
+                </beans:entry>
+                <beans:entry key="ebsr">
+                    <beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer" scope="prototype" />
+                </beans:entry>
+                <beans:entry key="qti">
+                    <beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer" scope="prototype" />
+                </beans:entry>
+                <beans:entry key="htq">
+                    <beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer" scope="prototype" />
+                </beans:entry>
+            </beans:map>
+        </beans:constructor-arg>
+        <beans:constructor-arg>
+            <beans:value>20</beans:value>
+        </beans:constructor-arg>
+        <beans:constructor-arg>
+            <beans:value>500</beans:value>
+        </beans:constructor-arg>
+        <beans:constructor-arg>
+            <beans:value>400</beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
+</beans:beans>
