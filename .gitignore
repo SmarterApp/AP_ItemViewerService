@@ -26,3 +26,4 @@ out/
 
 # Jmeter
 /jmeter/Results
+docker/itemviewerservice.war
