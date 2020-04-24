@@ -1,7 +1,7 @@
 package org.smarterbalanced.itemviewerservice.core.DiagnosticApi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "status")
 public class DiagnosticApi extends BaseDiagnostic {
-  private static final Logger logger = LoggerFactory.getLogger(DiagnosticApi.class);
+  //private static final Logger logger = LoggerFactory.getLogger(DiagnosticApi.class);
 
   @XmlAttribute(name = "unit")
   private static final String unit = "webserver";

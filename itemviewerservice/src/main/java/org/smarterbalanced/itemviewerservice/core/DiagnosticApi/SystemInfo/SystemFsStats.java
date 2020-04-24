@@ -25,7 +25,7 @@ public class SystemFsStats {
    * Instantiates a new SystemFsStats object.
    */
   public SystemFsStats() {
-    SystemInfo systemInfo = new SystemInfo();
+    //SystemInfo systemInfo = new SystemInfo();
     this.fsInfo = new ArrayList<>();
   }
 

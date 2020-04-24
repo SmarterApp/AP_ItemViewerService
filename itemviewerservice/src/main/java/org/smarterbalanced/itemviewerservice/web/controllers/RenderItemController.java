@@ -7,11 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+//import org.springframework.web.context.request.RequestContextHolder;
+//import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+
+//import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -27,39 +31,49 @@ public class RenderItemController {
    * @param itemId             Item bank and item ID separated by a "-"
    * @param accommodationCodes Feature codes delimited by semicolons.
    * @return content object.
-   */
+   */	
   @RequestMapping(value = "/{item:\\d+[-]\\d+}", method = RequestMethod.GET)
   @ResponseBody
   public ModelAndView getContent(@PathVariable("item") String itemId,
-                                 @RequestParam(value = "isaap", required = false,
-                                         defaultValue = "")
-                                         String accommodationCodes,
-                                 @RequestParam(value = "readOnly",
-                                         required = false,
-                                         defaultValue = "false"
-                                 ) boolean readOnly,
-                                 @RequestParam(value = "loadFrom",
-                                         required =  false,
-                                         defaultValue = "")
-                                           String loadFrom
-  ) {
-    //Request is in the format items, isaap
-    //Remove duplicates using a HashSet
-    HashSet<String> codeSet = new HashSet<>(Arrays.asList(accommodationCodes.split(";")));
-    //Pass isaap codes to ItemRequestModel to add accommodations
-    ArrayList<String> codes = new ArrayList<>(codeSet);
-    String[] itemArr = {itemId};
-    //The item model can take in multiple items.
-    // In our case we just need to load 1 item so we place the item requested into an array.
-    ItemRequestModel item = new ItemRequestModel(itemArr, codes, loadFrom);
+                                 @RequestParam(value = "isaap", required = false, defaultValue = "") String accommodationCodes,
+                                 @RequestParam(value = "readOnly", required = false, defaultValue = "false") boolean readOnly,
+                                 @RequestParam(value = "loadFrom", required =  false, defaultValue = "") String loadFrom) 
+  {
+	  //org.springframework.web.context.request.ServletRequestAttributes attributes = 
+		//	  	(org.springframework.web.context.request.ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+	  //javax.servlet.http.HttpServletRequest request = attributes.getRequest();
+	  //System.out.println("Remote host: [" + request.getRemoteHost() + "]");
+	  //System.out.println("Remote address: [" + request.getRemoteAddr() + "]");
+	  //System.out.println("Remote user: [" + request.getRemoteUser() + "]");
+	  //System.out.println("Local address: [" + request.getLocalAddr() + "]");
+	  //System.out.println("Local name: [" + request.getLocalName() + "]");
+	  //System.out.println("Server name: [" + request.getServerName() + "]");
+	  
+	  ModelAndView model = new ModelAndView();
+	  
+	  //if (request.getRemoteHost().toString().equals("35.165.70.242") ||
+		  //request.getRemoteHost().toString().equals("35.167.201.227")) {		  
+	  //Request is in the format items, isaap
+	  //Remove duplicates using a HashSet
+	  HashSet<String> codeSet = new HashSet<>(Arrays.asList(accommodationCodes.split(";")));
+	  //Pass isaap codes to ItemRequestModel to add accommodations
+	  ArrayList<String> codes = new ArrayList<>(codeSet);
+	  String[] itemArr = {itemId};
+	  //The item model can take in multiple items.
+	  // In our case we just need to load 1 item so we place the item requested into an array.
+	  ItemRequestModel item = new ItemRequestModel(itemArr, codes, loadFrom);
 
-    String token = item.generateJsonToken();
-    ModelAndView model = new ModelAndView();
-    model.setViewName("item");
-    model.addObject("readOnly", readOnly);
-    model.addObject("token", token);
-    model.addObject("item", itemArr[0]);
-    return model;
+	  String token = item.generateJsonToken();
+	  
+	  model.setViewName("item");
+	  model.addObject("readOnly", readOnly);
+	  model.addObject("token", token);
+	  model.addObject("item", itemArr[0]);
+	  //}else {
+		//model.setViewName("error");  
+	  //}
+	  
+	  return model;
   }
 
   /**

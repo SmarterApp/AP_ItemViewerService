@@ -5,13 +5,13 @@
     <artifactId>itemviewerservice</artifactId>
     <packaging>war</packaging>
     <name>itemviewerservice</name>
-    <version>3.6.2.HOTFIXVersion3</version>
+    <version>3.6.2-SECURE</version>
     
     <repositories>
         <repository>
         <id>org.opentestsystem</id>
-        <name>airdev-releases</name>
-        <url>https://airdev.artifactoryonline.com/airdev/libs-releases-local</url>
+        <name>artifactory-releases</name>
+        <url>https://artifactory.smarterbalanced.org/artifactory/libs-releases-local</url>
         </repository>
     </repositories>
 
@@ -102,6 +102,12 @@
             <version>1.1.4.RELEASE</version>
         </dependency>
 
+		<dependency>
+            <groupId>org.springframework.security.extensions</groupId>
+            <artifactId>spring-security-saml2-core</artifactId>
+            <version>1.0.3.RELEASE</version>
+        </dependency>
+		
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>
             <artifactId>iris</artifactId>
@@ -207,8 +213,8 @@
     <distributionManagement>
         <repository>
             <id>central</id>
-            <name>airdev-releases</name>
-            <url>https://airdev.jfrog.io/airdev/libs-releases-local</url>
+            <name>artifactory-releases</name>
+            <url>https://artifactory.smarterbalanced.org/artifactory/libs-releases-local</url>
         </repository>
     </distributionManagement>
 </project>

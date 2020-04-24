@@ -26,6 +26,7 @@ public class DiagnosticApiController {
    * @param request http request
    * @return Diagnostic results XML
    */
+  @SuppressWarnings("rawtypes")
   @ResponseBody
   @RequestMapping(value = "/statusLocal",
           method = RequestMethod.GET,
@@ -53,6 +54,7 @@ public class DiagnosticApiController {
    * @param request http request
    * @return Diagnostic results XML
    */
+  @SuppressWarnings("rawtypes")
   @ResponseBody
   @RequestMapping(value = "/status",
           method = RequestMethod.GET,

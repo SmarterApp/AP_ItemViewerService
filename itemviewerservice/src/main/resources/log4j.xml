@@ -14,7 +14,7 @@
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="1MB" />
         <param name="MaxBackupIndex" value="2" />
-        <param name="file" value="/home/tomcat7/itemviewerservice.log" />
+        <param name="file" value="/home/tomcat7/itemviewerservice.log" />       
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d
                 %-5p  [%c{1}] %m %n" />

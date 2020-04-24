@@ -1,15 +1,15 @@
 package org.smarterbalanced.itemviewerservice.core.Models;
 
-import com.sun.org.apache.xpath.internal.operations.Equals;
+//import com.sun.org.apache.xpath.internal.operations.Equals;
 import org.junit.Before;
 import org.junit.Test;
 import tds.irisshared.models.ItemRequestModel;
 
-import java.lang.reflect.Method;
+//import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertTrue;
+//import static junit.framework.Assert.assertTrue;
 
 public class ItemRequestModelTest {
 
