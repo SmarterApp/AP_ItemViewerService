@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>ERROR</title>
+<title>SSO Test</title>
 </head>
 <body>
-<h2>A CRITICAL ERROR HAS OCCURED</h2>
+<h2>SSO Test</h2>
 </body>
 </html>

@@ -18,8 +18,8 @@
 	<entry key="tds.itemPreview.passageLayout"></entry>
 	<entry key="tds.itemPreview.configCache.minutes">0</entry>
 	<entry key="tds.itemPreview.configCache.id"></entry>
-	<entry key="iris.ContentPath">/home/tomcat7/content/</entry>
-	<!-- <entry key="iris.ContentPath">D:\content\</entry> -->
+	<!-- <entry key="iris.ContentPath">/home/tomcat7/content/</entry>-->
+	<entry key="iris.ContentPath">D:\content\</entry>
 	<!-- URL for the Dictionary API used for the Dictionary and Thesaurus accommodations -->
 	<entry key="iris.DictionaryUrl">https://tds.smarterbalanced.org/Dictionary/</entry>
 	<!-- End Item Preview Settings -->
@@ -69,16 +69,16 @@
 
 	<!--dev settings -->
 
-	<entry key="iris.security.idp">https://smarterbalanced.oktapreview.com/app/exknzssimqgHg710E0h7/sso/saml/metadata</entry>
+	<entry key="iris.security.idp">https://smarterbalanced.oktapreview.com/app/exkr8099tdfGftxRU0h7/sso/saml/metadata</entry>
 	<entry key="iris.security.idp.logout">https://art.smarterbalanced.org:8443/saml/logout</entry>
-	<entry key="iris.security.idp.entity.id">item_review_viewer</entry>
+	<entry key="iris.security.idp.entity.id">item-viewer-service</entry>
 	<entry key="iris.security.saml.keystore.cert">apollo</entry>
 	<entry key="iris.security.saml.keystore.pass">nalle123</entry>
 	<entry key="iris.security.saml.privatekey.pass">nalle123</entry>
-	<entry key="iris.security.saml.baseUrl">https://irv-prod.smarterbalanced.org</entry>	
-	<entry key="iris.security.saml.contextUrl">irv-prod.smarterbalanced.org</entry>
+	<entry key="iris.security.saml.baseUrl">https://localhost:8443</entry>	
+	<entry key="iris.security.saml.contextUrl">localhost</entry>
 	<entry key="iris.security.saml.keyStorePath">WEB-INF/classes/samlKeystore.jks</entry>
-	<entry key="iris.security.saml.metaDataPath">/WEB-INF/classes/metadata.xml</entry>
+	<entry key="iris.security.saml.metaDataPath">/WEB-INF/classes/metadata/okta.xml</entry>
 	<entry key="iris.security.saml.protocol">https</entry>
 	
 	<!-- End BlackBox Settings -->
