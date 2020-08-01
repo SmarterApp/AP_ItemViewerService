@@ -1,0 +1,283 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>7.&nbsp;Metadata configuration</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"><link rel="prev" href="configuration-integration.html" title="6.&nbsp;Integration to applications"><link rel="next" href="security.html" title="8.&nbsp;Security configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">7.&nbsp;Metadata configuration</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuration-integration.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Configuring SAML Extension</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="security.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuration-metadata" href="#configuration-metadata"></a>7.&nbsp;Metadata configuration</h2></div></div></div>
+		
+		<p>
+			SAML metadata is an XML document which contains information necessary for interaction with SAML-enabled identity
+			or service providers. The document contains e.g. URLs of endpoints, information about supported bindings, identifiers and
+			public keys. Typically one metadata document will be generated for your own service provider and sent to all identity providers
+			you want to enable single sign-on with. Similarly, each identity provider will make its own metadata available for you to import
+			into your service provider application.
+		</p>
+		<p>
+			Each metadata document can contain definition for one or many identity or service providers and optionally can be digitally signed.
+			Metadata can be customized either by direct modifications to the XML document, or using extended metadata. Extended metadata is added
+			directly to the Spring configuration file and can contain additional options which are unavailable in the basic metadata document.
+		</p>
+		<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-metadata-sp" href="#configuration-metadata-sp"></a>7.1&nbsp;Service provider metadata</h2></div></div></div>
+			
+			<p>Service provider metadata contains keys, services and URLs defining SAML endpoints of your application. Metadata can be either
+			generated automatically upon first request to the service, or it can be pre-created (see <a class="xref" href="chapter-sample-app.html" title="11.&nbsp;Sample application">Chapter&nbsp;11, <i>Sample application</i></a>).
+			Once created metadata needs to be provided to the identity providers with whom we want to establish trust.</p>
+			<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-sp-generation" href="#configuration-metadata-sp-generation"></a>7.1.1&nbsp;Automatic metadata generation</h3></div></div></div>
+				
+				<p>
+					Automatic metadata generation is enabled by including the following filter in the Spring Security configuration:
+					</p><pre class="programlisting">&lt;security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/&gt;</pre><p>
+				</p>
+				<p>
+					This filter is automatically invoked as part of the first request to a URL processed by Spring Security. In case there
+					is no service provider metadata already specified (meaning property <span class="emphasis"><em>hostedSPName</em></span> of the
+					<span class="emphasis"><em>metadata</em></span> bean is empty) filter will generate a new one.
+				</p>
+				<p>
+					By default metadata will be generated with the following values which can be customized by setting properties of the <span class="emphasis"><em>metadataGenerator</em></span> bean:
+					</p><div class="table"><a name="configuration-metadata-sp-generation-default-values" href="#configuration-metadata-sp-generation-default-values"></a><p class="title"><b>Table&nbsp;7.1.&nbsp;Metadata generator settings</b></p><div class="table-contents">
+						
+						<table summary="Metadata generator settings" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"><col align="left" class="_2"></colgroup><thead><tr><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Property</th><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description</th><th style="border-bottom: 0.5pt solid ; " align="left">Default value</th></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">entityBaseURL</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Base URL to construct SAML endpoints from, needs to be a URL with protocol, server, port and context path.</td><td style="border-bottom: 0.5pt solid ; " align="left">Values from the request in format: <span class="emphasis"><em>scheme://server:port/contextPath</em></span></td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">entityId</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Unique identifier of the service provider.</td><td style="border-bottom: 0.5pt solid ; " align="left">&lt;entityBaseUrl&gt;/saml/metadata</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">id</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">XML identifier of the root metadata element referred in signature.</td><td style="border-bottom: 0.5pt solid ; " align="left">entityId with removed illegal characters (NCName)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">requestSigned</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Flag indicating whether this service signs authentication requests.</td><td style="border-bottom: 0.5pt solid ; " align="left">true</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">wantAssertionSigned</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Flag indicating whether this service requires signed assertions.</td><td style="border-bottom: 0.5pt solid ; " align="left">true</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">bindingsSSO</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Bindings to be included in the metadata for WebSSO profile. Supported values are: POST, Artifact and PAOS. Order of bindings in the property determines order of endpoints in the generated metadata.</td><td style="border-bottom: 0.5pt solid ; " align="left">POST, Artifact</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">bindingsHoKSSO</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Bindings to be included in the metadata for WebSSO Holder-of-Key profile. Supported values are: POST and Artifact. Order of bindings in the property determines order of endpoints in the generated metadata.</td><td style="border-bottom: 0.5pt solid ; " align="left">&nbsp;</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">bindingsSLO</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Bindings to be included in the metadata for Single Logout profile. Supported values are: POST and Redirect. Order of bindings in the property determines order of endpoints in the generated metadata.</td><td style="border-bottom: 0.5pt solid ; " align="left">POST, Redirect</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">assertionConsumerIndex</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Index of assertion consumer point to be marked as default.</td><td style="border-bottom: 0.5pt solid ; " align="left">0</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">includeDiscoveryExtension</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">When true generated metadata will contain extension indicating that it's able to consume response from an IDP Discovery service.</td><td style="border-bottom: 0.5pt solid ; " align="left">false</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left"><code class="literal">nameID</code></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Name identifiers to be included in the metadata. Supported values are: EMAIL, TRANSIENT, PERSISTENT, UNSPECIFIED and X509_SUBJECT. Order of NameIDs in the property determines order of NameIDs in the generated metadata.</td><td style="border-bottom: 0.5pt solid ; " align="left">EMAIL, TRANSIENT, PERSISTENT, UNSPECIFIED, X509_SUBJECT</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left"><code class="literal">extendedMetadata</code></td><td style="border-right: 0.5pt solid ; " align="left">Additional settings such as security keys, entity alias, metadata signing, IDP discovery, ECP settings, security profiles and signature requirements can be specified in the ExtendedMetadata, see <a class="xref" href="configuration-metadata.html#configuration-metadata-extended" title="7.3&nbsp;Extended metadata">Section&nbsp;7.3, &#8220;Extended metadata&#8221;</a> for details.</td><td style="" align="left">no extended metadata</td></tr></tbody></table>
+					</div></div><p><br class="table-break">
+				</p>
+				<p>
+					In case property <code class="literal">entityBaseURL</code> is not specified, it will be automatically generated based on values in the first HTTP request.
+					Generated value can be normalized to exclude standard 80/443 ports for http/https schemes by setting property <code class="literal">normalizeBaseUrl</code> of the MetadataGeneratorFilter
+					to <code class="literal">true</code>. It is recommended to provide the value explicitly in the configuration.
+				</p>
+				<p>
+					Providing an empty collection or null value to properties <span class="emphasis"><em>bindingsSSO</em></span>, <span class="emphasis"><em>bindingsHoKSSO</em></span> and <span class="emphasis"><em>bindingsSLO</em></span>
+					will disable and remove the given profile. For example the following setting removes the holder-of-key profile from the generated metadata,
+					forces artifact binding for single sign-on and redirect binding for single logout: </p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.metadata.MetadataGenerator"&gt;
+	&lt;property name="bindingsSSO"&gt;&lt;list&gt;&lt;value&gt;artifact&lt;/value&gt;&lt;/list&gt;&lt;/property&gt;
+	&lt;property name="bindingsSLO"&gt;&lt;list&gt;&lt;value&gt;redirect&lt;/value&gt;&lt;/list&gt;&lt;/property&gt;
+	&lt;property name="bindingsHoKSSO"&gt;&lt;list/&gt;&lt;/property&gt;
+&lt;/bean&gt;</pre>
+				<p>
+					By default generated metadata will not be digitally signed. Digital signature can be enabled using property
+					<code class="literal">signMetadata</code> of the <span class="emphasis"><em>extendedMetadata</em></span> bean.
+				</p>
+				<p>
+					In case application is deployed behind a reverse-proxy or other mechanism which makes the URL at the application server different
+					from the URL seen by client at least property <code class="literal">entityBaseURL</code> should be set to a value e.g. https://www.server.com:8080
+					For details about load balancing see <a class="xref" href="configuration-advanced.html#configuration-load-balancing" title="10.1&nbsp;Reverse proxies and load balancers">Section&nbsp;10.1, &#8220;Reverse proxies and load balancers&#8221;</a>.
+				</p>
+			</div>
+			<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-sp-import" href="#configuration-metadata-sp-import"></a>7.1.2&nbsp;Pre-configured metadata</h3></div></div></div>
+				
+				<p>In some situations it is beneficial to provide static version of the metadata document instead of the automatic generation. Need
+				for manual changes in the metadata or fixing of production settings are some of those. A custom metadata document describing local SP application
+				can be added by updating the <span class="emphasis"><em>metadata</em></span> bean with correct ExtendedMetadata. Please follow these steps
+				in order to do so: </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+					  <p>Generate and download metadata, e.g. using the <span class="emphasis"><em>Metadata Administration -&gt; Generate new service provider metadata</em></span> option in the sample application's administration UI or using instructions in <a class="link" href="configuration-metadata.html#configuration-metadata-sp-generation" title="7.1.1&nbsp;Automatic metadata generation">automatic metadata generator</a>.</p>
+				  </li><li class="listitem">
+					  <p>Store the metadata file as part of your project classpath, e.g. in <span class="emphasis"><em>WEB-INF/classes/metadata/localhost_sp.xml</em></span>.</p>
+				  </li><li class="listitem">
+					  <p>Disable the automatic metadata generator by removing the following custom filter from the <span class="emphasis"><em>securityContext.xml</em></span>: </p><pre class="programlisting">&lt;security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/&gt;</pre>
+				  </li><li class="listitem">
+					  <p>Include the SP metadata in the <span class="emphasis"><em>metadata</em></span> bean and mark the entity as <span class="emphasis"><em>local</em></span> in the extended metadata. Make sure to specify the <span class="emphasis"><em>alias</em></span>
+					  property in case it was used during metadata generation.</p>
+					  <p>It is recommended to use the administration UI which also generates all the Spring declarations ready for inclusion in your <span class="emphasis"><em>securityContext.xml</em></span>.</p>
+					  <p>Configuration for pre-configured local metadata can look for example like this: </p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate"&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider"&gt;
+			&lt;constructor-arg&gt;
+				&lt;bean class="java.util.Timer"/&gt;
+			&lt;/constructor-arg&gt;
+			&lt;constructor-arg&gt;
+				&lt;bean class="org.opensaml.util.resource.ClasspathResource"&gt;
+					&lt;constructor-arg value="/metadata/localhost_sp.xml"/&gt;
+				&lt;/bean&gt;
+			&lt;/constructor-arg&gt;
+			&lt;property name="parserPool" ref="parserPool"/&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"&gt;
+			&lt;property name="local" value="true"/&gt;
+			&lt;property name="securityProfile" value="metaiop"/&gt;
+			&lt;property name="sslSecurityProfile" value="pkix"/&gt;
+			&lt;property name="signMetadata" value="true"/&gt;
+			&lt;property name="signingKey" value="apollo"/&gt;
+			&lt;property name="encryptionKey" value="apollo"/&gt;
+			&lt;property name="requireArtifactResolveSigned" value="false"/&gt;
+			&lt;property name="requireLogoutRequestSigned" value="false"/&gt;
+			&lt;property name="requireLogoutResponseSigned" value="false"/&gt;
+			&lt;property name="idpDiscoveryEnabled" value="true"/&gt;
+			&lt;property name="idpDiscoveryURL"
+				value="https://www.server.com:8080/context/saml/discovery"/&gt;
+			&lt;property name="idpDiscoveryResponseURL"
+				value="https://www.server.com:8080/context/saml/login?disco=true"/&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre>
+				  </li></ul></div>
+				<p>Same instance of your application can include multiple statically declared local service providers each differentiated by its own unique
+				alias and entity ID, see <a class="xref" href="configuration-metadata.html#configuration-entity-alias" title="7.4&nbsp;Multi-tenancy and entity alias">Section&nbsp;7.4, &#8220;Multi-tenancy and entity alias&#8221;</a> for details. In case your application defines multiple local service providers,
+				set property <span class="emphasis"><em>hostedSPName</em></span> of the <span class="emphasis"><em>metadata</em></span> bean to the entity ID of the default one.</p>
+				<p>The file with pre-configured metadata doesn't need to include digital signature. Metadata will be automatically signed during runtime when property <span class="emphasis"><em>signMetadata</em></span> is set to <span class="emphasis"><em>true</em></span>.</p>
+				<p>For details about available settings of the ExtendedMetadata see <a class="xref" href="configuration-metadata.html#configuration-metadata-extended" title="7.3&nbsp;Extended metadata">Section&nbsp;7.3, &#8220;Extended metadata&#8221;</a>.</p>
+			</div>
+			<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-sp-display" href="#configuration-metadata-sp-display"></a>7.1.3&nbsp;Downloading metadata</h3></div></div></div>
+				
+				<p>Metadata describing the default local application can be downloaded from URL: </p><pre class="programlisting">https://www.server.com:8080/context/saml/metadata</pre>
+				<p>In case the application is configured to contain multiple service providers metadata for each can be loaded by
+				adding the alias: </p><pre class="programlisting">https://www.server.com:8080/context/saml/login/alias/defaultAlias</pre>
+				<p>URL for metadata download can be disabled by removing filter <span class="emphasis"><em>metadataDisplayFilter</em></span> from the <span class="emphasis"><em>securityContext.xml</em></span>.</p>
+				<p>Metadata is also available in the sample application's administration UI under <span class="emphasis"><em>Metadata information -&gt; selected SP</em></span>.</p>
+			</div>
+		</div>
+		<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-metadata-idp" href="#configuration-metadata-idp"></a>7.2&nbsp;Identity provider metadata</h2></div></div></div>
+			
+			<p>Metadata for identity providers is imported to the <span class="emphasis"><em>metadataManager</em></span> in a similar way as pre-configured
+			SP metadata. Metadata containing one or many identity providers can be added by providing an URL or a file. Processing of metadata and
+			processing of SAML messages can be customized using properties of ExtendedMetadataDelegate and ExtendedMetadata.</p>
+			<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-idp-file" href="#configuration-metadata-idp-file"></a>7.2.1&nbsp;File-based metadata provider</h3></div></div></div>
+				
+				<p>File-based provider loads metadata from a file available in the filesystem or classpath.</p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate"&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider"&gt;
+			&lt;constructor-arg&gt;
+				&lt;value type="java.io.File"&gt;classpath:security/idp.xml&lt;/value&gt;
+			&lt;/constructor-arg&gt;
+			&lt;property name="parserPool" ref="parserPool"/&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre>
+			  <p>Metadata is automatically refreshed in intervals specified by properties <span class="emphasis"><em>minRefreshDelay</em></span> and <span class="emphasis"><em>maxRefreshDelay</em></span> of the <span class="emphasis"><em>MetadataProvider</em></span> bean.</p>
+			</div>
+			<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-idp-http" href="#configuration-metadata-idp-http"></a>7.2.2&nbsp;HTTP-based metadata provider</h3></div></div></div>
+				
+				<p>HTTP-based provider loads metadata from an URL.</p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate"&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider"&gt;
+			&lt;constructor-arg&gt;
+				&lt;value type="java.lang.String"&gt;https://idp.ssocircle.com/idp-meta.xml&lt;/value&gt;
+			&lt;/constructor-arg&gt;
+			&lt;constructor-arg&gt;
+				&lt;!-- Timeout for metadata loading in ms --&gt;
+				&lt;value type="int"&gt;5000&lt;/value&gt;
+			&lt;/constructor-arg&gt;
+			&lt;property name="parserPool" ref="parserPool"/&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre>
+				<p>Metadata is automatically refreshed in intervals specified by properties <span class="emphasis"><em>minRefreshDelay</em></span> and <span class="emphasis"><em>maxRefreshDelay</em></span> of the <span class="emphasis"><em>MetadataProvider</em></span> bean.</p>
+				<p>Alternatively class <span class="emphasis"><em>org.opensaml.saml2.metadata.provider.FileBackedHTTPMetadataProvider</em></span> can be used to provide a backup in case URL is temporarily unavailable. File
+				to use as backup is specified as third argument in the <span class="emphasis"><em>MetadataProvider</em></span> bean constructor.</p>
+			</div>
+            <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-https" href="#configuration-metadata-https"></a>7.2.3&nbsp;HTTP-based metadata provider with SSL</h3></div></div></div>
+                
+                <p>By default, loading of metadata using the HTTP-based provider over HTTPS performs trust verification configured in your JDK. In case you'd like to use certificates in your <span class="emphasis"><em>keyStore</em></span>, add the following bean which changes the socketFactory used by the HTTP Client:
+                </p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer"/&gt;</pre>
+                <p>The <span class="emphasis"><em>TLSProtocolConfigurer</em></span> instantiates <span class="emphasis"><em>TLSProtocolSocketFactory</em></span> and registers is as a default socket factory for https protocol inside the HTTP Client used for metadata loading.
+                The socket factory uses all public certificates present in the <span class="emphasis"><em>keyStore</em></span> as trust anchors for PKIX validation. The used keys can be constrained with property <span class="emphasis"><em>trustedKeys</em></span>.</p>
+                <p>The socket factory configured in this fashion is used for all metadata providers. It is possible to customize metadata loading on a per-provider basis by adding a configured HttpClient instance to the HTTPMetadataProvider constructor.</p>
+            </div>
+			<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-metadata-idp-signature" href="#configuration-metadata-idp-signature"></a>7.2.4&nbsp;Metadata signature verification</h3></div></div></div>
+				
+				<p>Importing of digitally signed metadata requires verification of signature's validity and trust. Metadata is not required to be signed by default.
+				When present, signature is verified with PKIX algorithm and uses all public keys present in the configured <span class="emphasis"><em>keyManager</em></span> as trust anchors. Make sure to include root CA
+				certificate and intermediary CA certificates of the signature in your <span class="emphasis"><em>keyStore</em></span>. For details see <a class="xref" href="security.html#configuration-key-management-public-keys" title="8.1.3&nbsp;Importing public keys">Section&nbsp;8.1.3, &#8220;Importing public keys&#8221;</a>.</p>
+				<p>You can limit certificates used to perform the verification by setting property <span class="emphasis"><em>metadataTrustedKeys</em></span> of the ExtendedMetadataDelegate bean. The provided
+				collection should contain aliases of keys to be used as trust anchors.</p>
+				<p>Signature verification can be disabled by setting property <span class="emphasis"><em>metadataTrustCheck</em></span> to false in the ExtendedMetadataDelegate bean.
+				Setting <span class="emphasis"><em>metadataRequireSignature</em></span> to true will reject metadata unless it's digitally signed.</p>
+			</div>
+		</div>
+		<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-metadata-extended" href="#configuration-metadata-extended"></a>7.3&nbsp;Extended metadata</h2></div></div></div>
+			
+			<p>Extended metadata provides additional settings for customization of SAML exchanges between SP and IDP which are not supported in the standard SAML 2.0 metadata documents.
+      Examples of such settings are requirements for message signing, IDP discovery and security profiles.</p>
+            <p>Extended metadata is defined using
+      <span class="emphasis"><em>org.springframework.security.saml.metadata.ExtendedMetadata</em></span> beans embedded inside ExtendedMetadataDelegate for each SP or IDP metadata definition.
+      In case a single metadata document contains multiple identity providers (in multiple EntityDescriptor elements), extended metadata can be set separately for each of them using a map with
+      entity IDs as keys, e.g.: </p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate"&gt;
+	&lt;constructor-arg&gt;
+		metadata provider bean
+	&lt;/constructor-arg&gt;
+	&lt;constructor-arg&gt;
+		&lt;!-- Default extended metadata for entities not specified in the map --&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/&gt;
+	&lt;/constructor-arg&gt;
+	&lt;constructor-arg&gt;
+		&lt;!-- Extended metadata for specific IDPs --&gt;
+		&lt;map&gt;
+			&lt;entry key="https://idp.ssocircle.com"&gt;
+				&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/&gt;
+			&lt;/entry&gt;
+		&lt;/map&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre>
+            <p>The following table summarizes settings available in the extended metadata. The same class is
+                used for both local service providers and remote identity providers; each value contains information
+                about the entities it's valid for.
+                </p><div class="table"><a name="configuration-metadata-extended-settings" href="#configuration-metadata-extended-settings"></a><p class="title"><b>Table&nbsp;7.2.&nbsp;Extended metadata settings</b></p><div class="table-contents">
+                    
+                    <table summary="Extended metadata settings" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"><col align="left" class="_3"><col align="left" class="_4"></colgroup><thead><tr><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Property</th><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Default</th><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Entities</th><th style="border-bottom: 0.5pt solid ; " align="left">Description</th></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">false</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local and remote</td><td style="border-bottom: 0.5pt solid ; " align="left">True for metadata of a local service provider. False for remote identity
+                                    providers.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">alias</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">&nbsp;</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">Unique alias used to identify the selected local service provider based on
+                                    used URL. See <a class="xref" href="configuration-metadata.html#configuration-entity-alias" title="7.4&nbsp;Multi-tenancy and entity alias">Section&nbsp;7.4, &#8220;Multi-tenancy and entity alias&#8221;</a>.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">signMetadata</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">false</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">When true generated metadata will be signed using XML Signature using certificate with alias of <code class="literal">signingKey</code>.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">idpDiscoveryEnabled</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">false</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">When true system will initialize IDP discovery when no IDP is selected during
+                                    SSO initialization. See <a class="xref" href="configuration-sso.html#configuration-discovery" title="9.1&nbsp;IDP selection and discovery">Section&nbsp;9.1, &#8220;IDP selection and discovery&#8221;</a>.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">idpDiscoveryURL</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">internal discovery URL</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">URL of the IDP discovery service. Only used when discovery is enabled.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">idpDiscoveryResponseURL</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">internal discovery URL</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">URL expecting response from the IDP discovery service. Only used when
+                                    discovery is enabled.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">ecpEnabled</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">false</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">Property enables support for the SAML 2.0 ECP profile. See <a class="xref" href="configuration-advanced.html#enhanced-client" title="10.4&nbsp;Enhanced client/proxy">Section&nbsp;10.4, &#8220;Enhanced client/proxy&#8221;</a>.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">securityProfile</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">metaiop</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">Security profile for verification of message signatures. See <a class="xref" href="security.html#configuration-security-profiles" title="8.2&nbsp;Security profiles">Section&nbsp;8.2, &#8220;Security profiles&#8221;</a>.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">sslSecurityProfile</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">pkix</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">Security profile for vericiation of SSL/TLS endpoint trust. See <a class="xref" href="security.html#configuration-security-profiles" title="8.2&nbsp;Security profiles">Section&nbsp;8.2, &#8220;Security profiles&#8221;</a>.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">sslHostnameVerification</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">default</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">Verification of hostnames for HTTPS calls (e.g. in Artifact resolution).
+                                    Allowed values are <span class="emphasis"><em>default</em></span>, <span class="emphasis"><em>defaultAndLocalhost</em></span>,
+                                    <span class="emphasis"><em>strict</em></span> and <span class="emphasis"><em>allowAll</em></span>. Value <span class="emphasis"><em>allowAll</em></span>
+                                    effectively disables hostname verification. All values are case-insensitive. For
+                                    more details on the supported hostname verifications see
+                                    <a class="link" href="">Commons-SSL JavaDoc</a>.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">signingAlgorithm</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">-</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local only</td><td style="border-bottom: 0.5pt solid ; " align="left">Algorithm used to create digital signature on the metadata object. Typical values are <span class="emphasis"><em>https://www.w3.org/2000/09/xmldsig#rsa-sha1</em></span>,
+                                  <span class="emphasis"><em>https://www.w3.org/2001/04/xmldsig-more#rsa-sha256</em></span> and <span class="emphasis"><em>https://www.w3.org/2001/04/xmldsig-more#rsa-sha512</em></span>.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">signingKey</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">-</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local and remote</td><td style="border-bottom: 0.5pt solid ; " align="left">For local entities alias of private key used to create signatures. The
+                                    default private key is used when no value is provided. For remote identity
+                                    providers defines an additional public key used to verify signatures.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">encryptionKey</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">-</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local and remote</td><td style="border-bottom: 0.5pt solid ; " align="left">For local entities alias of private key used to encrypt data. The default
+                                    private key is used when no value is provided. For remote identity providers
+                                    defines an additional public key used to decrypt data.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">tlsKey</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">-</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local and remote</td><td style="border-bottom: 0.5pt solid ; " align="left">For local entities alias of private key used for SSL/TLS client
+                                    authentication. No client authentication is used when value is not specified.
+                                    For remote identity providers defines an additional public key used for trust
+                                    resolution.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">trustedKeys</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">-</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">remote</td><td style="border-bottom: 0.5pt solid ; " align="left">Keys included as trusted anchors during PKIX evaluation. All keys in the
+                                    keyStore are used as trust anchors with null value. Keys are only used with PKIX
+                                    security profile.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">requireLogoutRequestSigned</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">true</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local and remote</td><td style="border-bottom: 0.5pt solid ; " align="left">For local entities enables requirement of signed logout requests. For remote
+                                    entities enables signing of requests sent to the IDP.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">requireLogoutResponseSigned</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">false</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">local and remote</td><td style="border-bottom: 0.5pt solid ; " align="left">For local entities enables requirement of signed logout responses. For remote
+                                    entities enables signing of responses sent to the IDP.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">requireArtifactResolveSigned</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">true</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">remote only</td><td style="border-bottom: 0.5pt solid ; " align="left">Enables signing of artifact resolution requests sent to the remote identity
+                                    providers.
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">supportUnsolicitedResponse</td><td style="border-right: 0.5pt solid ; " align="left">true</td><td style="border-right: 0.5pt solid ; " align="left">remote only</td><td style="" align="left">Enables support for Unsolicited Responses (IDP-Initialized SSO) sent from 
+                                    this remote entity.
+                                </td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+            </p>
+            <p>For additional examples on setting up metadata and extended metadata see
+                <a class="xref" href="configuration-metadata.html#configuration-metadata-sp" title="7.1&nbsp;Service provider metadata">Section&nbsp;7.1, &#8220;Service provider metadata&#8221;</a> for local SP, and <a class="xref" href="configuration-metadata.html#configuration-metadata-idp" title="7.2&nbsp;Identity provider metadata">Section&nbsp;7.2, &#8220;Identity provider metadata&#8221;</a>
+                for remote IDPs.
+            </p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-entity-alias" href="#configuration-entity-alias"></a>7.4&nbsp;Multi-tenancy and entity alias</h2></div></div></div>
+            
+            <p>Spring SAML contains limited support for multi-tenancy. It is possible to define configuration for multiple instances of local service providers, where each
+                can have different URLs and security settings. System is differentiating between the service provider instances using <span class="emphasis"><em>entity alias</em></span> which
+                is a unique identifier within deployment of Spring SAML.</p>
+            <p><span class="emphasis"><em>Entity alias</em></span> is appended to URLs of SAML endpoints and used by Spring SAML to identify the correct instance.
+                For example for local service provider with <span class="emphasis"><em>entity alias</em></span>
+                <span class="emphasis"><em>customer123</em></span> the standard URL <span class="emphasis"><em>scheme://server:port/contextPath/saml/login</em></span> becomes
+                <span class="emphasis"><em>scheme://server:port/contextPath/saml/login/alias/customer123</em></span>.</p>
+            <p>The entity alias functionality can only be used together with pre-configured metadata (see <a class="xref" href="configuration-metadata.html#configuration-metadata-sp-import" title="7.1.2&nbsp;Pre-configured metadata">Section&nbsp;7.1.2, &#8220;Pre-configured metadata&#8221;</a>).
+                The <span class="emphasis"><em>entity alias</em></span> is specified in the extended metadata of each of the configured service providers.</p>
+            <p>Spring SAML doesn't enforce any limitations on which Identity Provider can be deliver messages to which of the local Service Providers. In case your application
+            requires similar rules (for example only certain tenants can authenticate using a specific IDP), make sure to implement them for example in your <span class="emphasis"><em>SAMLUserDetailsService</em></span> (for single sign-on).</p>
+            <p>Selection of the correct Service Provider instance based on URL is performed inside <span class="emphasis"><em>SAMLContextProviderImpl</em></span> class.</p>
+        </div>
+    </div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuration-integration.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="security.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">6.&nbsp;Integration to applications&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;8.&nbsp;Security configuration</td></tr></table></div></body></html>

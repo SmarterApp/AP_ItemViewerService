@@ -1,0 +1,191 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>9.&nbsp;Single sign-on configuration</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"><link rel="prev" href="security.html" title="8.&nbsp;Security configuration"><link rel="next" href="configuration-advanced.html" title="10.&nbsp;Advanced configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">9.&nbsp;Single sign-on configuration</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="security.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Configuring SAML Extension</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuration-advanced.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuration-sso" href="#configuration-sso"></a>9.&nbsp;Single sign-on configuration</h2></div></div></div>
+        
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-discovery" href="#configuration-discovery"></a>9.1&nbsp;IDP selection and discovery</h2></div></div></div>
+            
+            <p>Discovery helps your Service Provider determine which Identity Provider should be used for authentication of the current user. It is automatically initialized during calls to 
+            single sign-on endpoint at <span class="emphasis"><em>scheme://server:port/contextPath/saml/login</em></span>. SAML Extension supports multiple modes of discovery including 
+            the <a class="ulink" href="https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-idp-discovery.pdf" target="_top">Identity Provider Discovery Service Protocol and Profile</a>.</p>
+            <p>
+              IDP discovery modes can always be skipped during SSO initialization by specifying HTTP request parameter <span class="emphasis"><em>idp</em></span> with the
+              entityId of the required IDP, e.g. <span class="emphasis"><em>scheme://server:port/contextPath/saml/login?idp=mySelectedIDP</em></span>.
+            </p>
+            <p>
+              The URL where local SP expects discovery response can be included in the SP metadata as one of the extensions. The feature can be enabled by setting property <span class="emphasis"><em>includeDiscoveryExtension</em></span>
+              to true on bean <span class="emphasis"><em>MetadataGenerator</em></span> inside <span class="emphasis"><em>MetadataGeneratorFilter</em></span>, e.g.:
+        </p><pre class="programlisting">&lt;bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter"&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.MetadataGenerator"&gt;
+			&lt;property name="includeDiscoveryExtension" value="true"/&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre><p>
+            </p>
+            <p>
+              </p><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d5e1096" href="#d5e1096"></a>Default IDP without discovery</h2></div></div></div>
+                
+                <p>The mode is enabled by default and automatically selects the default IDP without performing discovery.</p>
+                <p>The default IDP can be configured using property <span class="emphasis"><em>defaultIDP</em></span> on bean <span class="emphasis"><em>metadata</em></span> in the Spring Security configuration. 
+                In case the property isn't set, system will automatically use the first available IDP.</p>
+              </div><p>
+              </p><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d5e1102" href="#d5e1102"></a>Local discovery service</h2></div></div></div>
+                
+                <p>SAML Extension includes a local IDP discovery service which presents user with an IDP selection page. This mode can be enabled by setting property <span class="emphasis"><em>includeDiscovery</em></span> in the
+                <a class="link" href="configuration-metadata.html#configuration-metadata-extended" title="7.3&nbsp;Extended metadata">local SP extended metadata</a> to <span class="emphasis"><em>true</em></span>.</p> 
+                <p>The selection page can be customized using property <span class="emphasis"><em>idpSelectionPath</em></span> on bean <span class="emphasis"><em>samlIDPDiscovery</em></span>. System forwards to this page wih a discovery request which includes the following request attributes:
+                  </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                            <p><span class="emphasis"><em>idpDiscoReturnURL</em></span> - URL to send the IDP selection result to using GET action</p>
+                        </li><li class="listitem">
+                            <p><span class="emphasis"><em>idpDiscoReturnParam</em></span> - name of the GET parameter to include the entity ID of the selected IDP</p>
+                        </li></ul></div><p>
+                </p>
+                <p>See the default implementation in <span class="emphasis"><em>sample/src/main/webapp/WEB-INF/security/idpSelection.jsp</em></span> for an example.</p>
+              </div><p>
+              </p><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d5e1120" href="#d5e1120"></a>Remote discovery service</h2></div></div></div>
+                
+                <p>In order to enable external IDP discovery service configure property <span class="emphasis"><em>idpDiscoveryURL</em></span> in your <a class="link" href="configuration-metadata.html#configuration-metadata-extended" title="7.3&nbsp;Extended metadata">local
+                SP extended metadata</a> to the external discovery URL. Make sure property <span class="emphasis"><em>idpDiscoveryEnabled</em></span> is set to true. The remote discovery service needs to support
+                the Identity Provider Discovery Service Protocol and Profile.</p>
+              </div><p>
+            </p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-sso-process" href="#configuration-sso-process"></a>9.2&nbsp;Single sign-on process</h2></div></div></div>
+            
+            <p>Spring SAML Extension supports both SP-initialized and IDP-initialized single sign-on.</p>        
+            <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-sso-process-sp-init" href="#configuration-sso-process-sp-init"></a>9.2.1&nbsp;Service provider initialized SSO</h3></div></div></div>
+                 
+                 <p>SP initialized SSO process can be started in two ways:
+                 </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                         <p>User accesses a resource protected by Spring Security which initializes SAMLEntryPoint</p>
+                     </li><li class="listitem">
+                         <p>User is redirected to the SSO endpoint at e.g. https://www.server.com/context/saml/login</p>
+                     </li></ul></div><p>
+                 </p>
+                 <p>After identification of IDP to use for authentication (for details see <a class="xref" href="configuration-sso.html#configuration-discovery" title="9.1&nbsp;IDP selection and discovery">Section&nbsp;9.1, &#8220;IDP selection and discovery&#8221;</a>), SAML Extension creates an AuthnRequest SAML message
+                 and sends it to the selected IDP. Both construction of the AuthnRequest and binding used to send it can be customized using <span class="emphasis"><em>WebSSOProfileOptions</em></span>
+                 object. SAMLEntryPoint determines <span class="emphasis"><em>WebSSOProfileOptions</em></span> configuration to use by calling method <span class="emphasis"><em>getProfileOptions</em></span>.
+                 The default implementation returns the value specified in property <span class="emphasis"><em>defaultOptions</em></span>. The method can be overridden to provide custom logic for SSO initialization.</p>
+                 <p>Default settings for <span class="emphasis"><em>WebSSOProfileOptions</em></span> can be specified in bean <span class="emphasis"><em>samlEntryPoint</em></span> of your <span class="emphasis"><em>securityContext.xml</em></span>, e.g.:
+                 </p><pre class="programlisting">&lt;bean id="samlEntryPoint" class="org.springframework.security.saml.SAMLEntryPoint"&gt;
+	&lt;property name="defaultProfileOptions"&gt;
+		&lt;bean class="org.springframework.security.saml.websso.WebSSOProfileOptions"&gt;
+			&lt;property name="binding" value="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/&gt;
+			&lt;property name="includeScoping" value="false"/&gt;
+		&lt;/bean&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;</pre>
+                <p>WebSSOProfileOptions supports the following settings:
+                    </p><div class="table"><a name="configuration-sso-webssoprofile-table" href="#configuration-sso-webssoprofile-table"></a><p class="title"><b>Table&nbsp;9.1.&nbsp;<span class="emphasis"><em>org.springframework.security.saml.websso.WebSSOProfileOptions</em></span> parameters</b></p><div class="table-contents">
+                     
+                     <table summary="org.springframework.security.saml.websso.WebSSOProfileOptions parameters" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"></colgroup><thead><tr><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Property</th><th style="border-bottom: 0.5pt solid ; " align="left">Description</th></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">binding</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: binding of the first declared SingleSignOnService in IDP metadata. Binding used to send message to IDP. Supported values depend on the SP configuration, typically "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+                    "urn:oasis:names:tc:SAML:2.0:bindings:PAOS" and "urn:oasis:names:tc:SAML:2.0:profiles:holder-of-key:SSO:browser".</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">providerName</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: empty. Human readable name of the local SP sent with the authentication request.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">assertionConsumerIndex</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: empty. When set determines where should IDP send response and which binding to use. Otherwise system uses the default assertion consumer service marked as default, or first applicable. Available indexes can be found in metadata of this service provider.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">nameID</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: empty. Name ID to request from IDP in the NameIDPolicy. No NameIDPolicy is sent when not specified. Typical values are "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:encrypted".</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">allowCreate</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: empty. Only applicable when nameID is specified, when true instructs IDP that it is allowed to create new user based on the authentication request.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">passive</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: false. Sets whether the IdP should refrain from interacting with the user during the authentication process.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">forceAuthn</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: false. When true IDP is required to re-authenticate user and not rely on previous authentication events.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">includeScoping</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: true. When true request will include Scoping element.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">allowedIDPs</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: empty. Values to be included in the Scoping element on top of the IDP message is sent to. Only applicable when includeScoping is set to true.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">proxyCount</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: 2. Determines value to be used in the proxyCount attribute of the scope in the AuthnRequest. Use zero to disable proxying or value &gt;0 to specify how many hops are allowed. Only applicable when includeScoping is set to true.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">authnContexts</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: empty. Authentication contexts IDP is allowed to use when authenticating user. See <a class="ulink" href="https://docs.oasis-open.org/security/saml/v2.0/saml-authn-context-2.0-os.pdf" target="_top">the specification</a> for details.</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">authnContextComparison</td><td style="border-bottom: 0.5pt solid ; " align="left">Default: AuthnContextComparisonTypeEnumeration.EXACT. Mechanism used by IDP to determine authentication method to use. See <a class="ulink" href="https://docs.oasis-open.org/security/saml/v2.0/saml-authn-context-2.0-os.pdf" target="_top">the specification</a> for details.</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">relayState</td><td style="" align="left">Default: empty. Value is sent to IDP and provided back to SP as part of the authentication response.</td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+                </p>
+                <p>The AuthnRequest message is sent unencrypted on message level. If needed, encryption should be provided by SSL/TLS on transport layer.</p>
+            </div>
+            <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-sso-process-idp-init" href="#configuration-sso-process-idp-init"></a>9.2.2&nbsp;Identity provider initialized SSO</h3></div></div></div>
+                
+                <p>Spring SAML supports reception of Unsolicited Response messages (so called IDP-initialized SSO). In this scenario IDP creates a Response object in the same way as if it was replying to 
+                an AuthnRequest message sent from SP, but it omits the InResponseTo parameter. Message is then sent to the AssertionConsumerURL of Spring SAML (typically 
+                <span class="emphasis"><em>scheme://server:port/contextPath/saml/SSO</em></span>) using one of the supported bindings. List of all available endpoints and bindings can be found in the metadata
+                of the Spring SAML application.</p>
+                <p>Received Unsolicited Respose message is processed and validated in exactly the same way as with SP-Initialized SSO.</p>
+                <p>Support for unsolicited messages can be disabled in the ExtendedMetadata of remote entities using property <span class="emphasis"><em>supportUnsolicitedResponse</em></span>.</p>
+            </div>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-logout" href="#configuration-logout"></a>9.3&nbsp;Logout process</h2></div></div></div>
+            
+            <p>Spring SAML Extension supports both Local Logout and Single Logout mechanisms.</p>
+             <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-logout-local" href="#configuration-logout-local"></a>9.3.1&nbsp;Local logout</h3></div></div></div>
+                     
+                     <p>
+                         Local logout terminates only the local session and doesn't affect neither session at IDP, nor sessions at other SPs where user logged in using single sign-on. Local logout
+                 can be initialized at <span class="emphasis"><em>scheme://server:port/contextPath/saml/logout?local=true</em></span>. Call is intercepted by bean <span class="emphasis"><em>samlLogoutFilter</em></span> which can be configured with
+                 the following settings:
+               </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                         <p>Instance of interface <span class="emphasis"><em>org.springframework.security.web.authentication.logout.LogoutSuccessHandler</em></span> (constructor index 0) which determines operation to perform after successful logout (e.g. redirect to a logout landing page). By default user gets redirected to page <span class="emphasis"><em>logout.jsp</em></span>.</p>
+                     </li><li class="listitem">
+                         <p>Instances of interface <span class="emphasis"><em>org.springframework.security.web.authentication.logout.LogoutHandler</em></span> (constructor index 1) which are responsible for destruction of user's session. The default handler <span class="emphasis"><em>org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler</em></span> logs the user out by removing the Authentication object, but leaves the HTTP session opened.</p>
+                     </li></ul></div>
+              <p>It is also possible to configure local logout using standard Spring Security element <span class="emphasis"><em>&lt;security:logout&gt;</em></span> inside <span class="emphasis"><em>&lt;security:http&gt;</em></span> block. For example:
+                  </p><pre class="programlisting">&lt;security:http&gt;
+	&lt;security:logout logout-url="/j_logout" logout-success-url="/logout.jsp"/&gt;
+&lt;/security:http&gt;</pre>
+             </div>
+             <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-logout-global" href="#configuration-logout-global"></a>9.3.2&nbsp;Global logout</h3></div></div></div>
+                     
+                     <p>Global logout implements the SAML 2.0 Single Logout profile which terminates both session at the current SP, the IDP session and sessions at other SPs connected to the same IDP session. Single Logout
+                 can be initialized from any of the participating SPs or from the IDP.</p>
+                 <p>Single Logout is currently supported with HTTP-Redirect and HTTP-POST bindings. SOAP binding is not available.</p>
+                 <p>Global logout can be initialized at <span class="emphasis"><em>scheme://server:port/contextPath/saml/logout</em></span>. System automatically determines which IDP to send the request to based on the currently authenticated user. Single logout can be configured using beans <span class="emphasis"><em>samlLogoutFilter</em></span> and <span class="emphasis"><em>samlLogoutProcessingFilter</em></span> with the following options:
+                 </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                         <p>Bean <span class="emphasis"><em>samlLogoutFilter</em></span> can be provided with instances of interface <span class="emphasis"><em>org.springframework.security.web.authentication.logout.LogoutHandler</em></span> (constructor index 3). The handlers are called before sending SAML 2.0 LogoutRequest to the IDP when initializing Single Logout from the current SP.</p>
+                     </li><li class="listitem">
+                         <p>Bean <span class="emphasis"><em>samlLogoutProcessingFilter</em></span> can be provided with instance of interface <span class="emphasis"><em>org.springframework.security.web.authentication.logout.LogoutSuccessHandler</em></span> (constructor index 0). Handler is called after successful finalization of Single Logout process (reception of LogoutResponse from IDP) and determines operation to perform after logout (e.g. redirect to a logout landing page). By default user gets redirected to page <span class="emphasis"><em>logout.jsp</em></span>.</p>
+                     </li><li class="listitem">
+                         <p>Bean <span class="emphasis"><em>samlLogoutProcessingFilter</em></span> can be provided with instances of interface <span class="emphasis"><em>org.springframework.security.web.authentication.logout.LogoutHandler</em></span> (constructor index 1). The handlers are called after successful reception of SAML 2.0 LogoutRequest or LogoutResponse from the IDP.</p>
+                     </li></ul></div>
+                 <p>Spring SAML correctly handles SAML 2.0 LogoutRequest messages sent from the IDP and performs logout in case the message is valid. In case of invalid data (missing signature, invalid issuer, invalid issue time, invalid destination, invalid session index, invalid name ID, no user logged in) system responds with SAML 2.0 LogoutResponse with an error Status code.</p>
+             </div>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-authentication-object" href="#configuration-authentication-object"></a>9.4&nbsp;Authentication object</h2></div></div></div>
+            
+            <p>Successful authentication using SAML token results in creation of an <span class="emphasis"><em>Authentication</em></span> object by
+            the <span class="emphasis"><em>SAMLAuthenticationProvider</em></span>. By default instance of <span class="emphasis"><em>org.springframework.security.providers.ExpiringUsernameAuthenticationToken</em></span>
+            is created. Content of the resulting object can be customized by setting properties of the <span class="emphasis"><em>samlAuthenticationProvider</em></span> bean in the <span class="emphasis"><em>securityContext.xml</em></span>.
+            An instance of <span class="emphasis"><em>org.springframework.security.saml.userdetails.SAMLUserDetailsService</em></span> can be provided to supply application-specific information about the
+            authenticated user.</p>
+            <p>The <span class="emphasis"><em>Authentication</em></span> object will by default include string version of the <span class="emphasis"><em>NameID</em></span> included in the SAML Assertion as its<span class="emphasis"><em>principal</em></span>. 
+            Property <span class="emphasis"><em>forcePrincipalAsString</em></span> can be used to change this to include the raw <span class="emphasis"><em>NameID</em></span> element.</p>
+            <p>The Authentication object is available in pages secured with Spring Security using <span class="emphasis"><em>SecurityContextHolder.getContext().getAuthentication()</em></span> and is populated with the following values:
+            </p><div class="table"><a name="authentication-object-table" href="#authentication-object-table"></a><p class="title"><b>Table&nbsp;9.2.&nbsp;ExpiringUsernameAuthenticationToken values.</b></p><div class="table-contents">
+                
+                <table summary="ExpiringUsernameAuthenticationToken values." style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"></colgroup><thead><tr><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Property</th><th style="border-bottom: 0.5pt solid ; " align="left">Value</th></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Principal</td><td style="border-bottom: 0.5pt solid ; " align="left">When forcePrincipalAsString = true (default) - <span class="emphasis"><em>String</em></span> value of <span class="emphasis"><em>NameID</em></span> included in the SAML Assertion (<span class="emphasis"><em>credential.getNameID().getValue()</em></span> of type java.lang.String)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Principal</td><td style="border-bottom: 0.5pt solid ; " align="left">When forcePrincipalAsString = false AND userDetail = null (default) - <span class="emphasis"><em>NameID</em></span> object included in the SAML Assertion (<span class="emphasis"><em>credential.getNameID()</em></span> of type <span class="emphasis"><em>org.opensaml.saml2.core.NameID</em></span>)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Principal</td><td style="border-bottom: 0.5pt solid ; " align="left">When forcePrincipalAsString = false AND userDetail != null - <span class="emphasis"><em>UserDetail</em></span> object returned from the <span class="emphasis"><em>SAMLUserDetailsService</em></span></td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Credentials</td><td style="border-bottom: 0.5pt solid ; " align="left">SAML authentication object including entity ID of local and remote entity, name ID, assertion and relay state (<span class="emphasis"><em>org.springframework.security.saml.SAMLCredential</em></span>)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Authorities</td><td style="border-bottom: 0.5pt solid ; " align="left">Result of <span class="emphasis"><em>getAuthorities()</em></span> call on the <span class="emphasis"><em>UserDetails</em></span> object returned from <span class="emphasis"><em>SAMLUserDetailsService</em></span>, empty list when there's no <span class="emphasis"><em>UserDetail</em></span> object available.</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">Expiration</td><td style="" align="left">Value of <span class="emphasis"><em>SessionNotOnOrAfter</em></span> in the SAML Assertion when avaialble, null otherwise. <span class="emphasis"><em>Authentication</em></span> object will start returning false on the <span class="emphasis"><em>isAuthenticated()</em></span> after the expiration time.</td></tr></tbody></table>
+            </div></div><p><br class="table-break"></p>
+            <p>Custom implementation of the <span class="emphasis"><em>SAMLUserDetailsService</em></span> can be provided as property <span class="emphasis"><em>userDetails</em></span> of the <span class="emphasis"><em>SAMLAuthenticationProvider</em></span>.
+            Implementation can perform operation such as parsing of attributes present in the SAML Assertion, e.g.:
+            </p><pre class="programlisting">package fi.schafer.test.saml;
+
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.xml.XMLObject;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.saml.SAMLCredential;
+import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
+
+public class TestUserDetails implements SAMLUserDetailsService {
+	@Override
+	public Object loadUserBySAML(SAMLCredential cred) throws UsernameNotFoundException {
+		return cred.getAttributeAsString("accountID");
+	}
+}</pre>
+            <p>Population of the authentication object can be further customized by overriding of the <span class="emphasis"><em>getUserDetails</em></span>, <span class="emphasis"><em>getPrincipal</em></span>, <span class="emphasis"><em>getEntitlements</em></span> and <span class="emphasis"><em>getExpirationDate</em></span> methods
+            in the <span class="emphasis"><em>SAMLAuthenticationProvider</em></span>.</p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-authentication-assertion" href="#configuration-authentication-assertion"></a>9.5&nbsp;Authentication assertion</h2></div></div></div>
+            
+            <p>Assertion used to authenticate user is stored in the <span class="emphasis"><em>SAMLCredential</em></span> object under property <span class="emphasis"><em>authenticationAssertion</em></span>. By default the original content (DOM) of the assertion is discarded and system only keeps an unmarshalled version which might slightly differ from the original, e.g. in white-spaces.
+            In order to instruct Spring SAML to keep the assertion in the original form (keep its DOM) set property <span class="emphasis"><em>releaseDOM</em></span> to <span class="emphasis"><em>false</em></span> on bean <span class="emphasis"><em>WebSSOProfileConsumerImpl</em></span>.</p>
+            <p>Assertion can be serialized to String using the following call:
+            </p><pre class="programlisting">XMLHelper.nodeToString(SAMLUtil.marshallMessage(credential.getAuthenticationAssertion()))</pre><p>
+            </p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-authentication-log" href="#configuration-authentication-log"></a>9.6&nbsp;Authentication log</h2></div></div></div>
+            
+            <p>Key events such as single sign-on and single logout initialization, success or failure can be logged for creation of an audit trail.
+            A custom logger can be created by implementing interface <span class="emphasis"><em>org.springframework.security.saml.log.SAMLLogger</em></span> and including its bean
+            in the <span class="emphasis"><em>securityContext.xml</em></span>, e.g.:</p><pre class="programlisting">&lt;bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger"/&gt;</pre>
+            <p>Two basic implementations are provided by default:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                  <p>org.springframework.security.saml.log.SAMLEmptyLogger</p>
+                  <p>Doesn't perform any logging, simply ignores all events.</p>
+              </li><li class="listitem">
+                  <p>org.springframework.security.saml.log.SAMLDefaultLogger</p>
+                  <p>Logs events as INFO level messages to the log name <span class="emphasis"><em>org.springframework.security.saml.log.SAMLDefaultLogger</em></span> configurable as described in <a class="xref" href="configuration-integration.html#logging" title="6.6&nbsp;Logging">Section&nbsp;6.6, &#8220;Logging&#8221;</a>. Setting
+                  property <span class="emphasis"><em>logMessages</em></span> to <span class="emphasis"><em>true</em></span> will include content of the SAML messages as part of the log. Logging of exceptions
+            can be disabled by setting <span class="emphasis"><em>logErrors</em></span> to <span class="emphasis"><em>false</em></span>. Fields are semicolon separated with the following values:</p>
+                  <div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: circle; "><li class="listitem"><p>type of SAML message (AuthNRequest, AuthNResponse, LogoutRequest or LogoutResponse)</p></li><li class="listitem"><p>result of processing (SUCCESS or FAILURE)</p></li><li class="listitem"><p>IP address of the peer who made the current request to SP</p></li><li class="listitem"><p>entity ID of the local SP</p></li><li class="listitem"><p>entity ID of the remote IDP</p></li><li class="listitem"><p>identifier of the authenticated user</p></li><li class="listitem"><p>SAML message (when logMessages is enabled)</p></li><li class="listitem"><p>text of the error (only for failures, when logErrors is enabled)</p></li></ul></div>
+              </li></ul></div>
+        <p>The logger is only called for messages which can be correctly received and parsed. For errors which occur before correct parsing see <a class="xref" href="configuration-integration.html#error-handling" title="6.5&nbsp;Error handling">Section&nbsp;6.5, &#8220;Error handling&#8221;</a>.</p>
+        </div>
+    </div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="security.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuration-advanced.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">8.&nbsp;Security configuration&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;10.&nbsp;Advanced configuration</td></tr></table></div></body></html>

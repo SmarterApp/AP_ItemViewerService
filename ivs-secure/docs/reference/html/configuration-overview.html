@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>5.&nbsp;Overview</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"><link rel="prev" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"><link rel="next" href="configuration-integration.html" title="6.&nbsp;Integration to applications"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5.&nbsp;Overview</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuration.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Configuring SAML Extension</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuration-integration.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuration-overview" href="#configuration-overview"></a>5.&nbsp;Overview</h2></div></div></div>
+		
+		<p>Spring Security SAML 2.0 library comprises three modules:
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>
+						<span class="emphasis"><em>core</em></span>
+						contains implementation of the WebSSO profiles of the SAML 2.0 protocol and is required for
+						integration to target systems.
+					</p>
+				</li><li class="listitem">
+					<p>
+						<span class="emphasis"><em>sample</em></span>
+						contains example of Spring configuration used for integration to target systems. It also
+						contains user interface for generation and management of metadata.
+					</p>
+				</li><li class="listitem">
+					<p>
+						<span class="emphasis"><em>docs</em></span>
+						contains this documentation.
+					</p>
+				</li></ul></div><p>
+		</p>
+		<p>Configuration of the library is done using Spring context XML. An example of configuration can be found
+			under <span class="emphasis"><em>sample/src/main/webapp/WEB-INF/securityContext.xml</em></span>.
+			Setting up of the library typically involves these steps:
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p><a class="link" href="configuration-integration.html" title="6.&nbsp;Integration to applications">integration to application using Spring XML configuration</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-metadata.html" title="7.&nbsp;Metadata configuration">import, generation and customization of SP and IDP metadata</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="security.html#configuration-key-management" title="8.1&nbsp;Key management">configuration of signature, encryption and trust keys</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="security.html#configuration-security-profiles" title="8.2&nbsp;Security profiles">configuration of security profiles</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-advanced.html#configuration-load-balancing" title="10.1&nbsp;Reverse proxies and load balancers">configuration of reverse proxy or load balancer</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-sso.html#configuration-discovery" title="9.1&nbsp;IDP selection and discovery">configuration of IDP selection or discovery</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-sso.html" title="9.&nbsp;Single sign-on configuration">configuration of single sign-on process</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-sso.html#configuration-logout" title="9.3&nbsp;Logout process">configuration of logout process</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-sso.html#configuration-authentication-object" title="9.4&nbsp;Authentication object">configuration of authentication object</a></p>
+				</li><li class="listitem">
+					<p><a class="link" href="configuration-sso.html#configuration-authentication-log" title="9.6&nbsp;Authentication log">configuration of authentication log</a></p>
+				</li></ul></div><p>
+		</p>
+		<p>Additional steps such as customization of SAML 2.0 bindings, configuration of artifact resolution 
+ or configuration of time skews might be needed.
+		</p>
+	</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuration.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuration-integration.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;II.&nbsp;Configuring SAML Extension&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;6.&nbsp;Integration to applications</td></tr></table></div></body></html>

@@ -1,0 +1,87 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>2.&nbsp;What's new</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="getting-started.html" title="Part&nbsp;I.&nbsp;Getting Started"><link rel="prev" href="chapter-introduction.html" title="1.&nbsp;Introduction"><link rel="next" href="glossary.html" title="3.&nbsp;Glossary"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.&nbsp;What's new</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="chapter-introduction.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;I.&nbsp;Getting Started</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="glossary.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="chapter-whats-new" href="#chapter-whats-new"></a>2.&nbsp;What's new</h2></div></div></div>
+	
+	<p>This section contains overview of important changes for released versions of Spring SAML.</p>
+
+  <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-whats-new-highlight-1.0.1" href="#section-whats-new-highlight-1.0.1"></a>2.1&nbsp;New features, improvements and fixes in 1.0.1.FINAL</h2></div></div></div>
+      
+    <p>Version 1.0.1.FINAL is fully backwards compatible with 1.0.0.FINAL and contains the following changes:</p>
+    <p>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>Added support for Spring Security 4.0</p></li><li class="listitem"><p>Added integration guide with Okta</p></li><li class="listitem"><p>MaxAuthenticationAge time supports longer expiration times than 21 days</p></li><li class="listitem"><p>Deployment without JKS keystore is now supported</p></li><li class="listitem"><p>Service provider can now define multiple assertion consumer endpoints with same binding</p></li><li class="listitem"><p>Minor fixes and documentation improvements</p></li></ul></div><p>
+    </p>
+  </div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-whats-new-highlight-1.0.0" href="#section-whats-new-highlight-1.0.0"></a>2.2&nbsp;New features, improvements and fixes in 1.0.0.FINAL</h2></div></div></div>
+		
+    <p>Final release is not directly compatible with the previous RC versions, please make sure to migrate your code based on guidelines and changes below:</p>
+    <p>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>Metadata signing now supports custom keyInfoGenerator and signingAlgorithm, signing can be enable per-entity</p></li><li class="listitem"><p>SAMLContextProvider has new customization possibilities for PKIXTrustEvaluator, PKIXInformationResolver and MetadataResolver</p></li><li class="listitem"><p>CertPathPKIXTrustEvaluator supports customization of security provider and explicit validation of certification path</p></li><li class="listitem"><p>MetadataCredentialResolver can be configured to load data from XML metadata and/or ExtendedMetadata</p></li><li class="listitem"><p>PKIXInformationResolver has an extension point for population of CRLs</p></li><li class="listitem"><p>Improvements to logging and error handling, profile implementations now throw exceptions which are logged inside filter objects and fail with ServletExceptions, sample application newly shows handling of these errors</p></li><li class="listitem"><p>Used OpenSAML version was updated to 2.6.1</p></li><li class="listitem"><p>SAMLDefaultLogger now logs additional information such as NameID</p></li><li class="listitem"><p>Enabled propagation of defaults (e.g. ProxySettings) set in the HttpClient object for ArtifactResolution</p></li><li class="listitem"><p>JKSKeyManager now supports keystores without password</p></li><li class="listitem"><p>SAMLContextProviderLB now supports empty contextPath and includes pathInfo data for requests</p></li><li class="listitem"><p>Entity ID and EntityDescriptor ID can now be set separately in MetadataGenerator</p></li><li class="listitem"><p>ECP now takes precedence over discovery in SAMLEntryPoint</p></li><li class="listitem"><p>Signing of local metadata is now done before displaying, this enables manual modifications to metadata in local files</p></li><li class="listitem"><p>ArtifactResolutionProfileImpl now support customization of used SocketFactory through extensions</p></li><li class="listitem"><p>ID in generated metadata is now automatically created when null, ID is based on entityID cleaned in order to conform to xsd:ID (and xsd:NCName) type, EntityID is cleaned by replacing all illegal characters by underscores</p></li><li class="listitem"><p>Support for hostname verification in artifact resolution</p></li><li class="listitem"><p>Completed documentation</p></li><li class="listitem"><p>Possibility to exclude the SAML Credential from the Authentication object</p></li><li class="listitem"><p>Disabled deferred node expansion for ParserPool which improves performance in parsing of small XML documents</p></li><li class="listitem"><p>HttpSessionStorage is now cleared after successful reception of a message in order to save memory</p></li><li class="listitem"><p>Possibility to include attributes from only the authenticated Assertion, or from all</p></li><li class="listitem"><p>New socket factory for trust verification during loading of metadata from HTTPS</p></li><li class="listitem"><p>Possibility to disable support for IDP-initialized SSO</p></li><li class="listitem"><p>Usage of metadata alias is now optional</p></li><li class="listitem"><p>New look and feel of the sample application</p></li><li class="listitem"><p>Cleanup of duplicate values in MetadataGenerator and ExtendedMetadata</p></li><li class="listitem"><p>SAMLCredential now contains facility methods for handling of String SAML attributes</p></li></ul></div><p>
+		</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-whats-new-code-changes-1.0.0" href="#section-whats-new-code-changes-1.0.0"></a>2.3&nbsp;Important code changes in 1.0.0.FINAL</h2></div></div></div>
+        
+        <p>Below is an overview of major code and structure changes since Spring SAML 1.0 RC2 with possible effect on backwards compatibility.</p>
+
+        <p><span class="emphasis"><em>Module names</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>module saml2-core was renamed to core, jar and maven artifact names stay the same</p></li><li class="listitem"><p>module saml2-sample was renamed to sample, jar and maven artifact names stay the same</p></li><li class="listitem"><p>module src was renamed to docs, jar and maven artifact names stay the same</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>Descriptor securityContext.xml</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>file saml2-sample/src/main/resources/security/securityContext.xml was moved to sample/src/main/webapp/WEB-INF/securityContext.xml</p></li><li class="listitem"><p>administration part of the UI is now secured with username/password</p></li><li class="listitem"><p>updated initialization of ParserPool to disable defer node expansion</p></li><li class="listitem"><p>HttpClient in ArtifactResolution was made thread safe</p></li><li class="listitem"><p>added new failure handler (failureRedirectHandler)</p></li><li class="listitem"><p>MetadataGenerator bean now demonstrates usage of ExtendedMetadata</p></li><li class="listitem"><p>FilesystemMetadataProvider was replaced with ResourceBackedMetadataProvider</p></li><li class="listitem"><p>file sample/src/main/resources/security/idp.xml was moved to sample/src/main/resources/metadata/idp.xml</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>ArtifactResolutionProfileBase</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>throws SAMLException instead of CredentialExpiredException on check of artifact response issue instant</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>HttpSessionStorage</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>storage is now cleared on successful message reception</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>MetadataDisplayFilter</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>new mandatory property KeyManager (autowired)</p></li></ul></div><p>
+        </p>
+       
+        <p><span class="emphasis"><em>MetadataGenerator</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>generated metadata is no longer signed by default (enable in ExtendedMetadata.signMetadata) and has disabled IDP discovery (enable in ExtendedMetadata.includeDiscovery)</p></li><li class="listitem"><p>the following fields were moved from MetadataGenerator to ExtendedMetadata:
+            </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: circle; "><li class="listitem"><p>entityAlias -&gt; alias</p></li><li class="listitem"><p>signMetadata -&gt; signMetadata</p></li><li class="listitem"><p>signingKey -&gt; signingKey</p></li><li class="listitem"><p>encryptionKey -&gt; encryptionKey</p></li><li class="listitem"><p>tlsKey -&gt; tlsKey</p></li><li class="listitem"><p>includeDiscovery -&gt; idpDiscoveryEnabled</p></li><li class="listitem"><p>customDiscoveryURL -&gt; idpDiscoveryURL</p></li><li class="listitem"><p>customDiscoveryResponseURL -&gt; idpDiscoveryResponseURL</p></li></ul></div><p>
+        </p></li><li class="listitem"><p>removed methods signSAMLObject (moved to SAMLUtil) and getKeyInfoGeneratorName (moved to ExtendedMetadata)</p></li><li class="listitem"><p>by default the first binding is now HTTP-POST instead of HTTP-Artifact, endpoint for Web SSO no longer includes PAOS binding, set property <span class="emphasis"><em>bindingsSSO</em></span> with values "artifact", "post", "paos" for backwards compatibility</p></li><li class="listitem"><p>by default endpoints for Web SSO holder of key are no longer included, set property <span class="emphasis"><em>bindingsHoKSSO</em></span> with values "artifact" and "post" for backwards compatibility</p></li><li class="listitem"><p>by default <span class="emphasis"><em>MetadataGeneratorFilter</em></span> no longer sets property <span class="emphasis"><em>entityAlias</em></span> to value <span class="emphasis"><em>defaultAlias</em></span>, set the value manually for backwards compatibility</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>SAMLAuthenticationProvider</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>property forcePrincipalAsString is now set to true by default</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>SAMLCredential</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>method getAttributeByName was renamed to getAttribute</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>SAMLDiscovery</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>fails with ServletException instead of SAMLRuntimeException</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>SAMLLogoutProcessingFilter</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>throws ServletException on errors during acceptance of LogoutRequest instead of SAMLRuntimeException</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>SAMLUtil</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>removed unused getDefaultBinding method</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>SingleLogoutProfileImpl</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>sendLogoutResponse signature changed</p></li><li class="listitem"><p>changed error handling, throws SAMLStatusException which is handled by Filter, logged and sends a SAML Response</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>WebSSOProfileImpl</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>throws SAMLException instead of SAMLRuntimeException on missing data in context</p></li></ul></div><p>
+        </p>
+
+        <p><span class="emphasis"><em>WebSSOProfileConsumerImpl</em></span>
+        </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem"><p>new property includeAllAttributes, set to true for original behavior</p></li><li class="listitem"><p>throws SAMLException instead of CredentialExpiredException on check of response issue instant and assertion issue instant</p></li></ul></div><p>
+        </p>
+  
+	</div>  
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="chapter-introduction.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="getting-started.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="glossary.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1.&nbsp;Introduction&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;3.&nbsp;Glossary</td></tr></table></div></body></html>

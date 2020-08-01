@@ -1,0 +1,165 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>4.&nbsp;Quick start guide</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="getting-started.html" title="Part&nbsp;I.&nbsp;Getting Started"><link rel="prev" href="glossary.html" title="3.&nbsp;Glossary"><link rel="next" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4.&nbsp;Quick start guide</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="glossary.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;I.&nbsp;Getting Started</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuration.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="chapter-quick-start" href="#chapter-quick-start"></a>4.&nbsp;Quick start guide</h2></div></div></div>
+	
+	<p>
+		This chapter will guide you through steps required to easily integrate Spring Security SAML Extension with
+		ssocircle.com's IDP service using SAML 2.0 protocol.
+		When done you will have a working example of Web SSO against a single Identity Provider. The steps will
+		guide you through deployment of the <a class="link" href="chapter-sample-app.html" title="11.&nbsp;Sample application">sample application</a>,
+		configuration of IDP metadata (XML document describing how to connect to the IDP server using SAML 2.0
+		protocol) and SP metadata (XML document describing
+		your own service) and testing of web single sign-on and single logout.
+	</p>
+  <p>Public demo of the sample application is available at <a class="ulink" href="https://saml-federation.appspot.com" target="_top">saml-federation.appspot.com</a></p>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quick-start-prerequisites" href="#quick-start-prerequisites"></a>4.1&nbsp;Pre-requisites</h2></div></div></div>
+		
+
+		<p>Please make sure the following items are available before starting the installation:
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>Java 1.6+ SDK</p>
+				</li><li class="listitem">
+					<p>Apache Maven</p>
+				</li></ul></div><p>
+		</p>
+		<p>SAML Extension relies on XML processing capabilities of JAXP. Some older versions of JRE might require updating of the embedded
+		JAXP libraries. In case you encounter XML processing exceptions please create folder <span class="emphasis"><em>jdk/jre/lib/endorsed</em></span> in your
+		JDK installation and include files in <span class="emphasis"><em>lib/endorsed</em></span> from the latest OpenSAML archive available at
+		<a class="ulink" href="https://shibboleth.net/downloads/java-opensaml/" target="_top">https://shibboleth.net/downloads/java-opensaml/</a>. The location of the
+		endorsed folder may differ based on your application server or container.</p>
+		<p>Due to US export limitations Java JDK comes with a limited set of cryptography capabilities. Usage of the SAML Extension might require 
+		installation of the <a class="ulink" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_top">Unlimited Strength Jurisdiction 
+		Policy Files</a> which removes these limitations.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quick-start-steps" href="#quick-start-steps"></a>4.2&nbsp;Installation steps</h2></div></div></div>
+		
+
+	<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-download" href="#quick-start-download"></a>4.2.1&nbsp;Downloading sample application</h3></div></div></div>
+		
+		<p>Download the Spring SAML Extension either from <a class="ulink" href="https://github.com/SpringSource/spring-security-saml" target="_top">sources</a> or
+		from one of the <a class="ulink" href="https://repo.spring.io/list/release/org/springframework/security/extensions/spring-security-saml/" target="_top">releases</a>.</p>
+		<p>The Spring SAML Sample application is included in <span class="emphasis"><em>sample</em></span> directory. We will be customizing
+		content of the sample application in the following steps.</p>
+	</div> 
+
+		<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-idp-metadata" href="#quick-start-idp-metadata"></a>4.2.2&nbsp;Configuration of IDP metadata</h3></div></div></div>
+			
+			<p>Modify file
+				<span class="emphasis"><em>sample/src/main/webapp/WEB-INF/securityContext.xml</em></span>
+				of the sample application and replace <span class="emphasis"><em>metadata</em></span> bean as follows:
+				</p><pre class="programlisting">&lt;bean id="metadata" class="org.springframework.security.saml.metadata.CachingMetadataManager"&gt;
+	&lt;constructor-arg&gt;
+		&lt;list&gt;
+			&lt;bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider"&gt;
+				&lt;constructor-arg&gt;
+					&lt;value type="java.lang.String"&gt;https://idp.ssocircle.com/idp-meta.xml&lt;/value&gt;
+				&lt;/constructor-arg&gt;
+				&lt;constructor-arg&gt;
+					&lt;value type="int"&gt;5000&lt;/value&gt;
+				&lt;/constructor-arg&gt;
+				&lt;property name="parserPool" ref="parserPool"/&gt;
+			&lt;/bean&gt;
+		&lt;/list&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre><p>
+			</p>
+			<p>The settings tell system to download IDP metadata from the given URL with timeout of 5
+				seconds. In production system metadata should be either stored as a local file or be downloaded
+				from a source using SSL/TLS with configured trust or which provides digitally signed metadata.
+			</p>
+		</div>
+
+		<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-sp-metadata" href="#quick-start-sp-metadata"></a>4.2.3&nbsp;Generation of SP metadata</h3></div></div></div>
+			
+			<p>Modify file
+				<span class="emphasis"><em>sample/src/main/webapp/WEB-INF/securityContext.xml</em></span>
+				of the sample application, replace <span class="emphasis"><em>metadataGeneratorFilter</em></span> bean as follows and make sure to replace
+				the entityId value with a string which is unique within the SSO Circle service (e.g. urn:test:yourname:yourcity):
+				</p><pre class="programlisting">&lt;bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter"&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.MetadataGenerator"&gt;
+			&lt;property name="entityId" value="replaceWithUniqueIdentifier"/&gt;
+			&lt;property name="extendedMetadata"&gt;
+				&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"&gt;
+					&lt;property name="signMetadata" value="false"/&gt;
+					&lt;property name="idpDiscoveryEnabled" value="true"/&gt;
+				&lt;/bean&gt;
+			&lt;/property&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre><p>
+			</p>
+		</div>
+
+		<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-compilation" href="#quick-start-compilation"></a>4.2.4&nbsp;Compilation</h3></div></div></div>
+			
+			<p>
+				When building from sources compile whole project and install artifacts into your local Maven repository using:
+				</p><pre class="programlisting">gradlew build install</pre><p>
+			</p>
+			<p>
+				When using the release zip compile the sample application available in the <span class="emphasis"><em>sample</em></span> directory using:
+				</p><pre class="programlisting">mvn package</pre><p>
+			</p>
+			<p>
+				You can find the compiled war archive <span class="emphasis"><em>spring-security-saml2-sample.war</em></span> in directory
+				<span class="emphasis"><em>sample/build/libs/</em></span> (gradle) or <span class="emphasis"><em>sample/target/</em></span> (maven).
+			</p>
+			<p>
+				Project files for your IDE can be created with <span class="emphasis"><em>gradlew eclipse</em></span> or <span class="emphasis"><em>gradlew idea</em></span>.
+			</p>
+		</div>
+
+		<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-deploy" href="#quick-start-deploy"></a>4.2.5&nbsp;Deployment</h3></div></div></div>
+			
+			<p>You can start the application from the release <span class="emphasis"><em>sample</em></span> directory using command: </p><pre class="programlisting">mvn tomcat7:run</pre>
+			<p>Same can be achieved using gradle with: </p><pre class="programlisting">gradlew tomcatRun</pre>
+			<p>After startup the Spring SAML sample application will be available at <span class="emphasis"><em>http://localhost:8080/spring-security-saml2-sample</em></span></p>
+			<p>Alternatively you can deploy the war archive to your application server or container.</p>
+		</div>
+
+		<div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-start-sp-metadata-to-idp" href="#quick-start-sp-metadata-to-idp"></a>4.2.6&nbsp;Uploading of SP metadata to the IDP</h3></div></div></div>
+			
+			<p>Download current SP metadata: </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>Open web browser to the URL of the deployed application.</p>
+				</li><li class="listitem">
+					<p>Select <span class="emphasis"><em>Metadata information</em></span>.</p>
+				</li><li class="listitem">
+					<p>Select first item from category <span class="emphasis"><em>Service providers</em></span>, e.g.
+						<span class="emphasis"><em>
+							http://localhost:8080/spring-security-saml2-sample/saml/metadata
+						</em></span>
+					</p>
+				</li><li class="listitem">
+					<p>Copy content of the Metadata textarea to your clipboard.</p>
+				</li></ul></div>
+			<p>Upload SP metadata to the IDP: </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>Register yourself at www.ssocircle.com and login to the service.</p>
+				</li><li class="listitem">
+					<p>Select Metadata manager and click Add new Service Provider.</p>
+				</li><li class="listitem">
+					<p>Enter <span class="emphasis"><em>entityId</em></span> configured in <a class="xref" href="chapter-quick-start.html#quick-start-sp-metadata" title="4.2.3&nbsp;Generation of SP metadata">Section&nbsp;4.2.3, &#8220;Generation of SP metadata&#8221;</a> in the FQDN field.</p>
+				</li><li class="listitem">
+					<p>Paste content of clipboard into the metadata information textarea.</p>
+				</li><li class="listitem">
+					<p>Store metadata by pressing the Submit button.</p>
+				</li><li class="listitem">
+					<p>Logout from the SSOCircle service.</p>
+				</li></ul></div>
+		</div>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quick-start-testing" href="#quick-start-testing"></a>4.3&nbsp;Testing single sign-on and single logout</h2></div></div></div>
+		
+		<p>Open the front page of your SP application, select <span class="emphasis"><em>https://idp.ssocircle.com</em></span> IDP and press login. The system
+		will generate a new authentication request using SAML 2.0 protocol, digitally sign it and send it to the IDP. After authentication at IDP
+		with your account you will be redirected back to your application and automatically signed-in.</p>
+		<p>Pressing local logout will destroy local session and logout the user. While a session is still active at the IDP an attempt to reauthenticate
+		will proceed without need to enter credentials.</p>
+		<p>Pressing global logout will destroy both local session and the session at IDP.</p>
+		<p>You can test IDP initialized single sign-on with URL <span class="emphasis"><em>https://idp.ssocircle.com:443/sso/saml2/jsp/idpSSOInit.jsp?metaAlias=/publicidp&amp;spEntityID=replaceWithUniqueIdentifier</em></span>, after replacing
+		the service provider identifier with the one configured as entityId in your securityContext.xml. It is possible to provide relayState data sent to your SP with parameter <span class="emphasis"><em>RelayState</em></span>.</p>
+	</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="glossary.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="getting-started.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuration.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.&nbsp;Glossary&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;II.&nbsp;Configuring SAML Extension</td></tr></table></div></body></html>

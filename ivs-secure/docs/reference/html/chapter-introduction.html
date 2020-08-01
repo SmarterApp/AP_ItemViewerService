@@ -1,0 +1,177 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>1.&nbsp;Introduction</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="getting-started.html" title="Part&nbsp;I.&nbsp;Getting Started"><link rel="prev" href="getting-started.html" title="Part&nbsp;I.&nbsp;Getting Started"><link rel="next" href="chapter-whats-new.html" title="2.&nbsp;What's new"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">1.&nbsp;Introduction</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="getting-started.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;I.&nbsp;Getting Started</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="chapter-whats-new.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="chapter-introduction" href="#chapter-introduction"></a>1.&nbsp;Introduction</h2></div></div></div>
+	
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-what-this-manual-covers" href="#section-what-this-manual-covers"></a>1.1&nbsp;What this manual covers</h2></div></div></div>
+		
+
+		<p>This manual describes Spring Security SAML Extension component, its uses, installation, configuration,
+			design and integration possibilities.
+		</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-when-to-use" href="#section-when-to-use"></a>1.2&nbsp;When to use Spring Security SAML Extension</h2></div></div></div>
+		
+
+		<p>The extension enables both new and existing applications to act as a Service Provider in federations based on Web Single Sign-On
+			and Single Logout profiles of SAML 2.0 protocol. The extension allows seamless combination of SAML 2.0 and other authentication and federation
+			mechanisms in a single application. All products supporting SAML 2.0 in Identity Provider mode (e.g. ADFS, Okta, Shibboleth, OpenAM, Efecte EIM or Ping
+			Federate) can be used with the extension.</p>
+		<p>The extension can also be used in applications which are not primarily secured using Spring Security. It can be adapted
+			for both single and multi-tenant environments. </p>
+		<p>The extension can be either embedded inside your application and work along other authentication
+			or single sign-on mechanisms, or it can be deployed separately and convey authentication information to
+			applications using a custom mechanism.</p>
+		<p>The extension is probably the most complete open-source SAML 2.0 SP implementation with the widest
+			feature-set and configuration possibilities. Other Java open-source alternatives are e.g. native SAML service providers
+			integrating with IIS or Apache from Shibboleth (SAML processing is done on the web server and not on the application
+			level) or OpenAM Fedlet.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-features-and-profiles" href="#section-features-and-profiles"></a>1.3&nbsp;Features and supported profiles</h2></div></div></div>
+		
+
+		<p>Current implementation should be conformant to SAML SP Lite and SAML eGovernment profile. The
+			following profiles, bindings and features are supported as part of the product:
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>Web single sign-on profile</p>
+				</li><li class="listitem">
+					<p>Web single sign-on holder-of-key profile</p>
+				</li><li class="listitem">
+					<p>IDP and SP initialized single sign-on</p>
+				</li><li class="listitem">
+					<p>Single logout profile</p>
+				</li><li class="listitem">
+					<p>Enhanced client/proxy profile</p>
+				</li><li class="listitem">
+					<p>Identity provider discovery profile and IDP selection</p>
+				</li><li class="listitem">
+					<p>Metadata interoperability and PKIX trust management</p>
+				</li><li class="listitem">
+					<p>Automatic service provider metadata generation</p>
+				</li><li class="listitem">
+					<p>Metadata loading from files, URLs, file-backed URLs</p>
+				</li><li class="listitem">
+					<p>Processing and automatic reloading of metadata with many identity providers</p>
+				</li><li class="listitem">
+					<p>Support for authentication contexts</p>
+				</li><li class="listitem">
+					<p>Logging for authentication events</p>
+				</li><li class="listitem">
+					<p>Customization of both SP and IDP metadata</p>
+				</li><li class="listitem">
+					<p>Processing of SAML attributes and user data using UserDetails interface</p>
+				</li><li class="listitem">
+					<p>Support for HTTP-POST, HTTP-Redirect, SOAP, PAOS and Artifact bindings</p>
+				</li><li class="listitem">
+					<p>Easy integration with applications using Spring Security</p>
+				</li><li class="listitem">
+					<p>Sample application with an user interface for quick configuration</p>
+				</li></ul></div><p>
+		</p>
+
+		<p>You can use the following supported standards as a reference:</p>
+
+			<p>SAML 2.0 basic profiles
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/v2.0/saml-authn-context-2.0-os.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/v2.0/saml-conformance-2.0-os.pdf</p>
+				</li></ul></div>
+
+			<p>SAML 2.0 additional profiles
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-holder-of-key-browser-sso.pdf
+					</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-idp-discovery.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml2-holder-of-key.pdf</p>
+				</li><li class="listitem">
+					<p>https://docs.oasis-open.org/security/saml/Post2.0/sstc-metadata-iop.pdf</p>
+				</li></ul></div>
+
+			<p>eGovernment profile
+			</p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+					<p>
+						https://kantarainitiative.org/confluence/download/attachments/42139782/kantara-egov-saml2-profile-2.0.pdf
+					</p>
+				</li></ul></div>
+
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-requirements" href="#section-requirements"></a>1.4&nbsp;Requirements</h2></div></div></div>
+		
+
+		<p>Spring Security SAML Extension requires as a minimum Java 1.6 and is known to work with most Java containers and application servers. It can also be used
+    with PaaS providers, such as Google App Engine, please see <a class="ulink" href="https://github.com/vschafer/spring-security-saml-gae" target="_top">https://github.com/vschafer/spring-security-saml-gae</a> for details.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-source" href="#section-source"></a>1.5&nbsp;Source code</h2></div></div></div>
+		
+
+		<p>Source code for the project is maintained on <a class="ulink" href="https://github.com/SpringSource/spring-security-saml" target="_top">Github</a>.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-build" href="#section-build"></a>1.6&nbsp;Builds</h2></div></div></div>
+		
+
+    <p>Snapshot builds of the project are available in the
+    <a class="ulink" href="https://repo.springsource.org/libs-snapshot/org/springframework/security/extensions/spring-security-saml/" target="_top">SpringSource repository</a>.
+    We use <a class="ulink" href="https://build.springsource.org/browse/SES" target="_top">Bamboo</a> for continuous integration.
+    </p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-license" href="#section-license"></a>1.7&nbsp;License</h2></div></div></div>
+		
+
+		<p>Source code of the module is licensed under the Apache License, Version 2.0. You may obtain copy
+		of the license at <a class="ulink" href="https://www.apache.org/licenses/LICENSE-2.0" target="_top">https://www.apache.org/licenses/LICENSE-2.0</a>.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-issue-tracking" href="#section-issue-tracking"></a>1.8&nbsp;Issue tracking</h2></div></div></div>
+		
+
+		<p>Please use <a class="ulink" href="https://jira.springsource.org/browse/SES/component/10711" target="_top">Spring Security Extensions Jira</a> for
+			submitting of bugs and feature requests. Patches can be sent directly to GitHub as pull requests, but preferably open a Jira issue as well.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-contributions" href="#section-contributions"></a>1.9&nbsp;Contributions</h2></div></div></div>
+		
+
+		<p>Please send your pull requests directly to GitHub and preferably also open issue in Jira.</p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-commercial-support" href="#section-commercial-support"></a>1.10&nbsp;Commercial support</h2></div></div></div>
+		
+
+<p>For commercial support and consulting services please contact <a class="ulink" href="vladimir@v7security.com" target="_top">sales@v7security.com</a></p>
+	</div>
+
+	<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-support" href="#section-support"></a>1.11&nbsp;Community support</h2></div></div></div>
+		
+
+		<p>For community support please use <a class="ulink" href="https://stackoverflow.com/questions/tagged/spring-saml" target="_top">Stack Overflow</a>.
+		The <a class="ulink" href="https://forum.spring.io/forumdisplay.php?86-SAML" target="_top">Spring Security forums</a> contain some previously answered
+		questions, but are now in read-only mode.</p>
+	</div>
+
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="section-dependencies" href="#section-dependencies"></a>1.12&nbsp;Dependencies</h2></div></div></div>
+        
+        <p>
+            Internal processing of SAML messages, marshalling and unmarshalling is handled by <a class="ulink" href="https://wiki.shibboleth.net/confluence/display/OpenSAML/Home" target="_top">OpenSAML</a>.
+        </p>
+        <p>Spring SAML has a transitive dependency to library <a class="ulink" href="https://github.com/narupley/not-going-to-be-commons-ssl" target="_top">Not-Going-To-Be-Commons-SSL</a>.
+            Inside Spring SAML this library is only used for hostname verifications and will be removed in case OpenSAML removes the dependency.</p>
+    </div>
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="getting-started.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="getting-started.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="chapter-whats-new.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;I.&nbsp;Getting Started&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;2.&nbsp;What's new</td></tr></table></div></body></html>

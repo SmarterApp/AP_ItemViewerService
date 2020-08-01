@@ -1,0 +1,198 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>10.&nbsp;Advanced configuration</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"><link rel="prev" href="configuration-sso.html" title="9.&nbsp;Single sign-on configuration"><link rel="next" href="sample-app.html" title="Part&nbsp;III.&nbsp;Sample application"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">10.&nbsp;Advanced configuration</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuration-sso.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Configuring SAML Extension</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="sample-app.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuration-advanced" href="#configuration-advanced"></a>10.&nbsp;Advanced configuration</h2></div></div></div>
+        
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-load-balancing" href="#configuration-load-balancing"></a>10.1&nbsp;Reverse proxies and load balancers</h2></div></div></div>
+            
+            <p>SAML Extension can be deployed in scenarios where multiple back-end servers process SAML requests forwarded by a reverse-proxy or a load balancer.
+                SSL termination proxies which communicate using an unencrypted channel between the proxy and back-end servers are also supported. In order
+                to configure SAML Extension for deployment behind a load balancer or a reverse-proxy please follow these steps:
+                </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                        <p>Make sure that your reverse-proxy or load-balancer is configured to use sticky sessions. Information about e.g. sent requests is stored
+                            within a user's HTTP session and sending of response to another back-end node would make the original request data unavailable and fail the validation.
+                            Sticky session are not necessary in case only IDP-initialized SSO is used or when sessions are replicated to all nodes.</p>
+                    </li><li class="listitem">
+                        <p>Provide information about front-end URL to the back-end servers by changing the <span class="emphasis"><em>contextProvider</em></span> bean implementation in your <span class="emphasis"><em>securityContext.xml</em></span>
+                            to class <span class="emphasis"><em>org.springframework.security.saml.context.SAMLContextProviderLB</em></span>: </p><pre class="programlisting">&lt;bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderLB"&gt;
+	&lt;property name="scheme" value="https"/&gt;
+	&lt;property name="serverName" value="www.myserver.com"/&gt;
+	&lt;property name="serverPort" value="443"/&gt;
+	&lt;property name="includeServerPortInRequestURL" value="false"/&gt;
+	&lt;property name="contextPath" value="/spring-security-saml2-sample"/&gt;
+&lt;/bean&gt;</pre>
+                        <p>This setting enables the extension to correctly form all generated URLs and verify endpoints of the incoming SAML messages.</p>
+                    </li><li class="listitem">
+                        <p>In case you use automatically generated metadata make sure to configure <span class="emphasis"><em>entityBaseURL</em></span> matching the front-end URL in your <span class="emphasis"><em>metadataGeneratorFilter</em></span>
+                            bean: </p><pre class="programlisting">&lt;bean id="metadataGeneratorFilter"
+		class="org.springframework.security.saml.metadata.MetadataGeneratorFilter"&gt;
+	&lt;constructor-arg&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.MetadataGenerator"&gt;
+			&lt;property name="entityBaseURL"
+				value="https://www.myserver.com/spring-security-saml2-sample"/&gt;
+		&lt;/bean&gt;
+	&lt;/constructor-arg&gt;
+&lt;/bean&gt;</pre>
+                    </li></ul></div><p>
+            </p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-context-provider" href="#configuration-context-provider"></a>10.2&nbsp;Context provider</h2></div></div></div>
+            
+            <p>Context provider populates information about the local service provider (your application) such as entityId, role, metadata, security keys, SSL credentials
+            and trust engines for verification of signatures and SSL/TLS connections. Once populated context is made available to all components participating
+            in processing of the incoming or outgoing SAML messages. ContextProvider can customized to alter behavior of the SAML Extension. The default
+            implementation <span class="emphasis"><em>org.springframework.security.saml.context.SAMLContextProviderImpl</em></span> relies on information available in the ExtendedMetadata and
+            performs the following steps for creation of the context:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                        <p>Locate entityId of the local SP by parsing part of the URL after <span class="emphasis"><em>/alias/</em></span> (e.g. myAlias in https://www.myserver.com/saml_extension/saml/sso/alias/myAlias?idp=myIdp) and matching
+                        it with property <span class="emphasis"><em>alias</em></span> specified in the ExtendedMetadata. In case the URL doesn't contain any alias part the default service provider
+                        configured with property <span class="emphasis"><em>hostedSPName</em></span> on the <span class="emphasis"><em>metadata</em></span> bean is used.</p>
+                    </li><li class="listitem">
+                        <p>Populate credential used to decrypt data sent to this service provider. In case ExtendedMetadata specifies property <span class="emphasis"><em>encryptionKey</em></span>
+                        it will be used as an alias to lookup a private key from the <span class="emphasis"><em>keyManager</em></span> bean. Otherwise defaultKey of the <span class="emphasis"><em>keyManager</em></span> bean will be used.</p>
+                    </li><li class="listitem">
+                        <p>Populate credential used for SSL/TLS client authentication. In case ExtendedMetadata specifies property <span class="emphasis"><em>tlsKey</em></span> it will be used
+                        as an alias to lookup key from <span class="emphasis"><em>keyManager</em></span> bean. Otherwise no credential will be provided for client authentication.</p>
+                    </li><li class="listitem">
+                        <p>Populate trust engine for verification of signatures. Depending on <span class="emphasis"><em>securityProfile</em></span> setting in the ExtendedMetadata trust engine
+                        based on either <a class="xref" href="security.html#configuration-security-profiles-metaiop" title="8.2.1&nbsp;Metadata interoperability profile (MetaIOP)">Section&nbsp;8.2.1, &#8220;Metadata interoperability profile (MetaIOP)&#8221;</a> or <a class="xref" href="security.html#configuration-security-profiles-pkix" title="8.2.2&nbsp;PKIX profile">Section&nbsp;8.2.2, &#8220;PKIX profile&#8221;</a> is created.</p>
+                    </li><li class="listitem">
+                        <p>Populate trust engine for verification of SSL/TLS connections. Depending on <span class="emphasis"><em>sslSecurityProfile</em></span> setting in the ExtendedMetadata
+                        trust engine based on either <a class="xref" href="security.html#configuration-security-profiles-metaiop" title="8.2.1&nbsp;Metadata interoperability profile (MetaIOP)">Section&nbsp;8.2.1, &#8220;Metadata interoperability profile (MetaIOP)&#8221;</a> or <a class="xref" href="security.html#configuration-security-profiles-pkix" title="8.2.2&nbsp;PKIX profile">Section&nbsp;8.2.2, &#8220;PKIX profile&#8221;</a> is created.</p>
+                    </li></ul></div>
+            <p>During initialization of SSO ContextProvider is also requested to provide metadata of the peer IDP. System performs these steps to locate peer IDP to use:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                        <p>Load parameter <span class="emphasis"><em>idp</em></span> of the HttpRequest object and try to locate peer IDP by the entityId. When there's no <span class="emphasis"><em>idp</em></span>
+                        parameter provided system will either start IDP discovery process (when enabled in the ExtendedMetadata of the local SP) or use the default IDP specified in the
+                        <span class="emphasis"><em>metadata</em></span> bean.</p>
+                    </li></ul></div>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="time-interval" href="#time-interval"></a>10.3&nbsp;Validity intervals</h2></div></div></div>
+            
+            <p>For security reasons system limits the time window enabling processing of SAML messages and assertions. The time window parameters can be customized with the following settings.</p>
+            <p>Validity of assertions processed during the signle sign-on process is limited to 3000 seconds. Value can be customized with property <span class="emphasis"><em>maxAssertionTime</em></span>
+            of the <span class="emphasis"><em>WebSSOProfileConsumerImpl</em></span> bean.</p>
+            <p>System allows users to single sign-on for up to 7200 seconds since their initial authentication with the IDP (based on value AuthInstance of the Authentication statement).
+            Some IDPs allow users to stay authenticated for longer periods than this and you might need to change the default value by setting <span class="emphasis"><em>maxAuthenticationAge</em></span>
+            of the <span class="emphasis"><em>WebSSOProfileConsumerImpl</em></span> bean.</p>
+            <p>As clocks between IDP and SP machines may not be perfectly synchronized a tolerance of 60 seconds is applied for time comparisons. The tolerance value (time skew) can be customized
+            by settings property <span class="emphasis"><em>responseSkew</em></span> in beans <span class="emphasis"><em>WebSSOProfileConsumerImpl</em></span> and <span class="emphasis"><em>SingleLogoutProfileImpl</em></span>.</p>
+       <p>The following tables summarize all checks for time validity during processing of incoming SAML messages. Response skew refers to property <span class="emphasis"><em>responseSkew</em></span>
+       set on profile beans. Past indicates that validity window for checking of the value will be extended by <span class="emphasis"><em>responseSkew</em></span> seconds to the past and correspondingly
+       with the future value. Nullable values can be missing from the incoming messages.
+                </p><div class="table"><a name="time-skew-overview-authnrespose" href="#time-skew-overview-authnrespose"></a><p class="title"><b>Table&nbsp;10.1.&nbsp;Time checks during processing of incoming SAML Response in WebSSO and WebSSO HoK profiles</b></p><div class="table-contents">
+                    
+                    <table summary="Time checks during processing of incoming SAML Response in WebSSO and WebSSO HoK profiles" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"></colgroup><tbody><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.issueInstant</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past + future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws SAMLException</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description:</td><td style="border-bottom: 0.5pt solid ; " align="left">Time when SAML response message was created.</td></tr><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.assertion.issueInstant</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past + future) + maxAssertionTime (future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws SAMLException</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description:</td><td style="border-bottom: 0.5pt solid ; " align="left">Time when SAML assertion was created, allows validity extension as assertion might be
+                                    re-used by the caller.
+                                </td></tr><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.assertion.subject.subjectConfirmation.notOnOrAfter
+                                    </strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws SAMLException</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description:</td><td style="border-bottom: 0.5pt solid ; " align="left">Time when subject can no longer be confirmed.</td></tr><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.assertion.authnStatement.authnInstant</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past + future) + maxAuthenticationAge (future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws CredentialsExpiredException</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description:</td><td style="border-bottom: 0.5pt solid ; " align="left">Time when user authenticated to IDP, typically differs from time or response or
+                                    assertion creation time.
+                                </td></tr><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.assertion.authnStatement.sessionNotOnOfAfter</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">no skew</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws CredentialsExpiredException</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description:</td><td style="border-bottom: 0.5pt solid ; " align="left">Time when user's session expires and requires re-authentication, sessions are
+                                    typically valid for longer period and therefore do not suffer from time synchronization
+                                    problems.
+                                </td></tr><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.assertion.condition.notBefore</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws SAMLException</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Description:</td><td style="border-bottom: 0.5pt solid ; " align="left">Time limit on validity of assertion.</td></tr><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.assertion.condition.notOnOrAfter</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws SAMLException</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">Description:</td><td style="" align="left">Time limit on validity of assertion.</td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+                </p><div class="table"><a name="time-skew-overview-logoutrequest" href="#time-skew-overview-logoutrequest"></a><p class="title"><b>Table&nbsp;10.2.&nbsp;Time checks during processing of incoming SAML LogoutRequest in Single Logout profile</b></p><div class="table-contents">
+                    
+                    <table summary="Time checks during processing of incoming SAML LogoutRequest in Single Logout profile" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"></colgroup><tbody><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.issueInstant</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past + future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Sends LogoutResponse with error Status
+                                    "urn:oasis:names:tc:SAML:2.0:status:Requester"
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">Description:</td><td style="" align="left">Time when SAML LogoutRequest message was created.</td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+                </p><div class="table"><a name="time-skew-overview-logoutresponse" href="#time-skew-overview-logoutresponse"></a><p class="title"><b>Table&nbsp;10.3.&nbsp;Time checks during processing of incoming SAML LogoutResponse in Single Logout profile</b></p><div class="table-contents">
+                    
+                    <table summary="Time checks during processing of incoming SAML LogoutResponse in Single Logout profile" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"></colgroup><tbody><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.issueInstant</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past + future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws SAMLException</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">Description:</td><td style="" align="left">Time when SAML LogoutResponse message was created.</td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+                </p><div class="table"><a name="time-skew-overview-artifacteresponse" href="#time-skew-overview-artifacteresponse"></a><p class="title"><b>Table&nbsp;10.4.&nbsp;Time checks during processing of incoming SAML ArtifactResponse in Artifact Resolution profile
+                    </b></p><div class="table-contents">
+                    
+                    <table summary="Time checks during processing of incoming SAML ArtifactResponse in Artifact Resolution profile&#xA;                    " style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"></colgroup><tbody><tr><td style="border-bottom: 0.5pt solid ; " colspan="2" align="left">
+                                    <span class="strong"><strong>response.issueInstant</strong></span>
+                                </td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Applied skew:</td><td style="border-bottom: 0.5pt solid ; " align="left">responseSkew (past + future)</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Nullable:</td><td style="border-bottom: 0.5pt solid ; " align="left">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Fails with:</td><td style="border-bottom: 0.5pt solid ; " align="left">Throws MessageDecodingException</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">Description:</td><td style="" align="left">Time when SAML LogoutResponse message was created.</td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+            </p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="enhanced-client" href="#enhanced-client"></a>10.4&nbsp;Enhanced client/proxy</h2></div></div></div>
+            
+            <p>Support for enhanced client/proxy can be configured using property <span class="emphasis"><em>ecpEnabled</em></span> of the service provider's extended metadata. Once enabled, ECP profile is automatically activated with requests containing HTTP headers
+            <span class="emphasis"><em>Accept: application/vnd.paos+xml</em></span> and <span class="emphasis"><em>PAOS: ver='urn:liberty:paos:2003-08'; 'urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp'</em></span>. Binding used to server ECP profile is always automatically set to PAOS.</p>
+            <p>ECP can be enabled in combination with the automatic metadata generation using the following settings: </p><pre class="programlisting">&lt;bean class="org.springframework.security.saml.metadata.MetadataGenerator"&gt;
+	&lt;property name="extendedMetadata"&gt;
+		&lt;bean class="org.springframework.security.saml.metadata.ExtendedMetadata"&gt;
+			&lt;property name="ecpEnabled" value="true"/&gt;
+		&lt;/bean&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;</pre><p>
+            </p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="endpoint-url" href="#endpoint-url"></a>10.5&nbsp;Endpoint URLs</h2></div></div></div>
+            
+            <p>By default Spring SAML uses the following endpoints, which can optionally also contain information about <a class="link" href="configuration-metadata.html#configuration-entity-alias" title="7.4&nbsp;Multi-tenancy and entity alias">entity alias</a> of the local Service Provider:
+                </p><div class="table"><a name="endpoint-url-overview" href="#endpoint-url-overview"></a><p class="title"><b>Table&nbsp;10.5.&nbsp;Endpoint overview</b></p><div class="table-contents">
+                
+                <table summary="Endpoint overview" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col align="left" class="_1"><col align="left" class="_2"><col align="left" class="_2"></colgroup><thead><tr><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Profile</th><th style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Binding</th><th style="border-bottom: 0.5pt solid ; " align="left">Endpoint</th></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Web Single Sign-on</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">HTTP-POST, HTTP-Artifact, PAOS</td><td style="border-bottom: 0.5pt solid ; " align="left">scheme://server:port/contextPath/saml/SSO</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">Web Single Sign-on Holder of Key</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; " align="left">HTTP-POST, HTTP-Artifact</td><td style="border-bottom: 0.5pt solid ; " align="left">scheme://server:port/contextPath/saml/HoKSSO</td></tr><tr><td style="border-right: 0.5pt solid ; " align="left">Single Logout</td><td style="border-right: 0.5pt solid ; " align="left">HTTP-POST, HTTP-Redirect</td><td style="" align="left">scheme://server:port/contextPath/saml/SingleLogout</td></tr></tbody></table>
+                </div></div><p><br class="table-break">
+            </p>
+            <p>The default URLs can be altered with these steps:
+                </p><div class="itemizedlist"><ul class="itemizedlist compact" style="list-style-type: disc; "><li class="listitem">
+                        <p>change property <span class="emphasis"><em>filterProcessesUrl</em></span> on the corresponding processing bean (<span class="emphasis"><em>samlWebSSOProcessingFilter</em></span>, <span class="emphasis"><em>samlWebSSOHoKProcessingFilter</em></span>, <span class="emphasis"><em>samlLogoutProcessingFilter</em></span> or <span class="emphasis"><em>samlIDPDiscovery</em></span>) to the new URL, for example <span class="emphasis"><em>/samlResponse</em></span></p>
+                    </li><li class="listitem">
+                        <p>update the <span class="emphasis"><em>samlFilter</em></span> bean and make sure that the modified processing filter is mapped to the correct pattern, for example <span class="emphasis"><em>/samlResponse/**</em></span>, the <span class="emphasis"><em>/**</em></span> part is only needed in case you're using the entity alias feature</p>
+                    </li><li class="listitem">
+                        <p>re-generate metadata for your service provider, in case you are using <a class="link" href="configuration-metadata.html#configuration-metadata-sp-generation" title="7.1.1&nbsp;Automatic metadata generation">automatic metadata generator</a> the endpoints will be automatically generated with the new URLs</p>
+                    </li><li class="listitem">
+                        <p>in case you are using <a class="link" href="configuration-metadata.html#configuration-metadata-sp-import" title="7.1.2&nbsp;Pre-configured metadata">pre-configured metadata</a> you can perform changes manually in your existing metadata file</p>
+                    </li></ul></div><p>
+            </p>
+            <p>Endpoints of filters <span class="emphasis"><em>samlEntryPoint</em></span>, <span class="emphasis"><em>samlLogoutFilter</em></span> and <span class="emphasis"><em>metadataDisplayFilter</em></span> can be changed using the same process and without need to re-generate the metadata.</p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="artifact-resolution" href="#artifact-resolution"></a>10.6&nbsp;Artifact resolution</h2></div></div></div>
+            
+            <p>Usage of HTTP-Artifact binding requires Spring SAML to make a direct SOAP call to the Identity Provider. Sometimes it's necessary to configure correct HTTP proxy for the call. This can be achieved
+            by setting property <span class="emphasis"><em>hostConfiguration</em></span> on <span class="emphasis"><em>HttpClient</em></span> plugged to the <span class="emphasis"><em>artifactBinding</em></span> bean. The following configuration demonstrates creation of the bean
+            for the <span class="emphasis"><em>hostConfiguration</em></span>: </p><pre class="programlisting">&lt;bean id="hostConfiguration" class="org.apache.commons.httpclient.HostConfiguration"/&gt;
+&lt;bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"&gt;
+	&lt;property name="targetObject" ref="hostConfiguration"/&gt;
+	&lt;property name="targetMethod" value="setProxy"/&gt;
+	&lt;property name="arguments"&gt;
+		&lt;list&gt;
+			&lt;value&gt;testHost&lt;/value&gt;
+			&lt;value&gt;8080&lt;/value&gt;
+		&lt;/list&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;</pre><p>
+            </p>
+            <p>Another common use-case is situation when artifact resolution endpoint at IDP is secured using HTTP-Basic authentication. Authentication can be configured by setting 
+            <span class="emphasis"><em>HTTPClient's</em></span> property <span class="emphasis"><em>state</em></span> with the following bean: </p><pre class="programlisting">&lt;bean id="state" class="org.apache.commons.httpclient.HttpState"/&gt;
+&lt;bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"&gt;
+	&lt;property name="targetObject" ref="state"/&gt;
+	&lt;property name="targetMethod" value="setCredentials"/&gt;
+	&lt;property name="arguments"&gt;
+		&lt;list&gt;
+			&lt;util:constant static-field="org.apache.commons.httpclient.auth.AuthScope.ANY"/&gt;
+			&lt;bean class="org.apache.commons.httpclient.UsernamePasswordCredentials"&gt;
+				&lt;constructor-arg value="username"/&gt;
+				&lt;constructor-arg value="password"/&gt;
+			&lt;/bean&gt;
+		&lt;/list&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;</pre><p>
+            </p>
+        </div>
+    </div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuration-sso.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="sample-app.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">9.&nbsp;Single sign-on configuration&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;III.&nbsp;Sample application</td></tr></table></div></body></html>

@@ -1,0 +1,45 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>11.&nbsp;Sample application</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="sample-app.html" title="Part&nbsp;III.&nbsp;Sample application"><link rel="prev" href="sample-app.html" title="Part&nbsp;III.&nbsp;Sample application"><link rel="next" href="integration.html" title="Part&nbsp;IV.&nbsp;Integration guide"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">11.&nbsp;Sample application</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="sample-app.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;III.&nbsp;Sample application</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="integration.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="chapter-sample-app" href="#chapter-sample-app"></a>11.&nbsp;Sample application</h2></div></div></div>
+		
+		<p>Spring SAML includes a sample application which demonstrates key capabilities of this product. For details on compilation and deployment of the sample application
+    please see <a class="xref" href="chapter-quick-start.html" title="4.&nbsp;Quick start guide">Chapter&nbsp;4, <i>Quick start guide</i></a>.</p>
+    
+    <p>Public demo of the sample application is available at <a class="ulink" href="https://saml-federation.appspot.com" target="_top">saml-federation.appspot.com</a></p>
+    
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sample-authentication" href="#sample-authentication"></a>11.1&nbsp;SAML login</h2></div></div></div>
+        
+        <p>Sample application demonstrates usage of IDP discovery which is automatically invoked on access to the application root. Discovery presents selection of all available Identity Providers
+        and initiates SAML 2.0 single sign-on with the selected IDP after clicking on the <span class="emphasis"><em>"Start single sign-on"</em></span> button.</p>
+        <p>After authentication at IDP, sample application displays information about the received and validated assertion, or displays errors encountered during validation.</p>
+        <p>Clicking buttons <span class="emphasis"><em>"Global Logout"</em></span> and <span class="emphasis"><em>"Local Logout"</em></span> initializes the logout process as described in <a class="xref" href="configuration-sso.html#configuration-logout" title="9.3&nbsp;Logout process">Section&nbsp;9.3, &#8220;Logout process&#8221;</a>.</p>
+    </div>
+    
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sample-administration-ui" href="#sample-administration-ui"></a>11.2&nbsp;Metadata administration</h2></div></div></div>
+        
+        <p>Sample application contains an administration UI which enables simple monitoring and administrative use-cases. You can access the UI by 
+        clicking on <span class="emphasis"><em>"Metadata Administration"</em></span> button.</p>
+        <p>Administration part is secured with role <span class="emphasis"><em>ROLE_ADMIN</em></span> and uses local authentication with default username <span class="emphasis"><em>admin</em></span> and password <span class="emphasis"><em>admin</em></span>.
+        As Spring Security allows only one authentication to be currently active, authenticating to administration UI will remove any previous SAML authentication from the security context.</p>
+        <p>Metadata administration enables the following operations:
+			</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+					<p>Displaying of existing identity provider and service provider entities by clicking on their identifier. Information includes content of the metadata and extended metadata for the entity.</p>
+				</li><li class="listitem">
+					<p>Displaying of existing metadata providers and possibility to remove them.</p>
+				</li><li class="listitem">
+					<p>Refreshing of all metadata providers by clicking on button <span class="emphasis"><em>"Refresh metadata"</em></span>.</p>
+				</li><li class="listitem">
+					<p>Generation of new metadata by clicking on <span class="emphasis"><em>"Generate new service provider metadata"</em></span>.</p>
+				</li></ul></div><p>
+        </p>
+    </div>
+    
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sample-administration-metadata-generation" href="#sample-administration-metadata-generation"></a>11.3&nbsp;Metadata generation</h2></div></div></div>
+        
+        <p>Metadata generator allows dynamic creation of service provider metadata based on values provided in the UI. Metadata can be immediately applied to the currently
+        running instance by setting <span class="emphasis"><em>"Store for current session"</em></span> option to <span class="emphasis"><em>"Yes"</em></span>.</p>
+        <p>Options available in the interface are discussed in <a class="xref" href="configuration-metadata.html#configuration-metadata-sp-generation" title="7.1.1&nbsp;Automatic metadata generation">Section&nbsp;7.1.1, &#8220;Automatic metadata generation&#8221;</a> and <a class="xref" href="configuration-metadata.html#configuration-metadata-extended" title="7.3&nbsp;Extended metadata">Section&nbsp;7.3, &#8220;Extended metadata&#8221;</a>.
+        The generated values can be used as input for pre-configured metadata described in <a class="xref" href="configuration-metadata.html#configuration-metadata-sp-import" title="7.1.2&nbsp;Pre-configured metadata">Section&nbsp;7.1.2, &#8220;Pre-configured metadata&#8221;</a>.</p>
+    </div>
+        
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="sample-app.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="sample-app.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="integration.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;III.&nbsp;Sample application&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;IV.&nbsp;Integration guide</td></tr></table></div></body></html>

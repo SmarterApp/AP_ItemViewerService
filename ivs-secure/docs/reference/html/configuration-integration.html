@@ -1,0 +1,97 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>6.&nbsp;Integration to applications</title><link rel="stylesheet" type="text/css" href="css/manual-multipage.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="Spring Security SAML Extension"><link rel="up" href="configuration.html" title="Part&nbsp;II.&nbsp;Configuring SAML Extension"><link rel="prev" href="configuration-overview.html" title="5.&nbsp;Overview"><link rel="next" href="configuration-metadata.html" title="7.&nbsp;Metadata configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">6.&nbsp;Integration to applications</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuration-overview.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Configuring SAML Extension</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuration-metadata.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuration-integration" href="#configuration-integration"></a>6.&nbsp;Integration to applications</h2></div></div></div>
+		
+		<p>SAML module can be directly embedded into new or existing Spring applications. In
+			this case application itself includes the SAML library in WEB-INF/lib directory of the war archive and
+			processes all SAML interactions. The other option of using the SAML library is deploying it as a
+			stand-alone module
+			which transfers information about the authenticated user to the target application using a custom
+			mechanism. This chapter only discusses the first option.
+		</p>
+		<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-integration-maven" href="#configuration-integration-maven"></a>6.1&nbsp;Maven dependency</h2></div></div></div>
+			
+			<p>
+				In order to include the library and all its dependencies add the following dependency to your
+				pom.xml file:
+				</p><pre class="programlisting">&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.security.extensions&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-security-saml2-core&lt;/artifactId&gt;
+	&lt;version&gt;${version}&lt;/version&gt;
+&lt;/dependency&gt;</pre><p>
+			</p>
+			<p>The current version of SAML Extension has been tested to work with Spring 3.1.2, Spring Security 3.1.2 and OpenSAML 2.6.1.
+			Later versions of these libraries are likely to be compatible without need for modifications.</p>
+		</div>
+		<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-integration-bean-definitions" href="#configuration-integration-bean-definitions"></a>6.2&nbsp;Bean definitions</h2></div></div></div>
+			
+			<p>Configuration of the SAML library requires beans definitions included in the
+				<span class="emphasis"><em>sample/src/main/webapp/WEB-INF/securityContext.xml</em></span>
+				configuration file. Include copy of the file in your own Spring application, either directly or with
+				an inclusion. Configuration steps in the following chapters will be customizing beans included in
+				the default context.
+			</p>
+			<p>Beans of the SAML library are using auto-wiring and annotation-based configuration by default.
+				Make sure that your Spring configuration
+				contains e.g. the following settings in order to enable support for these features:
+				</p><pre class="programlisting">&lt;context:annotation-config/&gt;
+&lt;context:component-scan base-package="org.springframework.security.saml"/&gt;
+</pre><p>
+				</p>
+			</div>
+			<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-java" href="#configuration-java"></a>6.3&nbsp;Java-based configuration</h2></div></div></div>
+			
+				<p>Spring SAML will include configuration classes for Spring Java-based configuration in future versions.</p>
+				<p>For an example of <span class="emphasis"><em>securityContext.xml</em></span> translated into Java configuration in a Spring Boot application see project by Vincenzo De Notaris at <a class="ulink" href="https://github.com/vdenotaris/spring-boot-security-saml-sample" target="_top">https://github.com/vdenotaris/spring-boot-security-saml-sample</a>.</p>
+			</div>
+			<div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-integration-spring-security" href="#configuration-integration-spring-security"></a>6.4&nbsp;Spring Security integration</h2></div></div></div>
+				
+				<p>Filters of the SAML module need to be enabled as part of the Spring Security settings. In case
+					SAML authentication should be the default authentication mechanism of the application set bean
+					<span class="emphasis"><em>samlEntryPoint</em></span>
+					as the default entry point. Make sure that filter
+					<span class="emphasis"><em>samlFilter</em></span>
+					is included as one of the custom filters. In case SP metadata should be
+					generated automatically during first request to the application include also filter<span class="emphasis"><em>
+						metadataGeneratorFilter</em></span>.
+					The configuration directive may for example look as follows:
+					</p><pre class="programlisting">&lt;security:http entry-point-ref="samlEntryPoint"&gt;
+	&lt;security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/&gt;
+	&lt;security:custom-filter after="BASIC_AUTH_FILTER" ref="samlFilter"/&gt;
+&lt;/security:http&gt;</pre><p>
+			</p>
+		</div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="error-handling" href="#error-handling"></a>6.5&nbsp;Error handling</h2></div></div></div>
+            
+            <p>Critical errors raised during processing of SAML messages are generally propagated as ServletExceptions to the Java container. In order to configure a custom error handling update your web.xml
+                and provide a general handler for ServletExceptions:</p><pre class="programlisting">&lt;error-page&gt;
+	&lt;exception-type&gt;javax.servlet.ServletException&lt;/exception-type&gt;
+	&lt;location&gt;/error.jsp&lt;/location&gt;
+&lt;/error-page&gt;</pre>
+            <p>ServletException contains original reason for the failure as a cause. It is recommended that content of the exceptions is not displayed to end users, both for security and user experience reasons.</p>
+            <p>Errors produced during processing of the SAML AuthenticationResponse can be handled by plugging a custom implementation of
+                the <span class="emphasis"><em>org.springframework.security.web.authentication.AuthenticationFailureHandler</em></span> interface to the <span class="emphasis"><em>samlWebSSOProcessingFilter</em></span> bean.</p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="logging" href="#logging"></a>6.6&nbsp;Logging</h2></div></div></div>
+            
+            <p>SAML Extension uses <a class="ulink" href="https://www.slf4j.org/" target="_top">SLF4J framework</a> for logging. The same applies to the underlying OpenSAML
+                library. The sample application by default uses log4j version 1.2 binding for SLF4J, configured with the following dependency:</p><pre class="programlisting">&lt;dependency&gt;
+	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+	&lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+	&lt;version&gt;1.6.3&lt;/version&gt;
+	&lt;scope&gt;compile&lt;/scope&gt;
+&lt;/dependency&gt;</pre>
+            <p>To view the contents of SAML messages and errors from the logs, adjust the settings of the SAMLDefaultLogger bean.</p>
+            <pre class="programlisting">&lt;bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger"&gt;
+       	&lt;property name="logAllMessages" value="true"/&gt;
+    	&lt;property name="logErrors" value="true"/&gt;
+    	&lt;property name="logMessagesOnException" value="true"/&gt;
+	&lt;/bean&gt;</pre>
+            <p>In case you are using another logging library, make sure to change the dependency accordingly.</p>
+            <p>You can enable debug logging by modifying file <span class="emphasis"><em>sample/src/main/resources/log4j.properties</em></span> and adding:
+                </p><pre class="programlisting">log4j.logger.org.springframework.security.saml=DEBUG
+log4j.logger.org.opensaml=DEBUG
+log4j.logger.PROTOCOL_MESSAGE=DEBUG</pre>
+            <p>For details about using other logging frameworks please consult the <a class="ulink" href="https://www.slf4j.org/manual.html" target="_top">SLF4J manual</a>.</p>
+        </div>
+	</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuration-overview.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuration.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuration-metadata.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">5.&nbsp;Overview&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;7.&nbsp;Metadata configuration</td></tr></table></div></body></html>
