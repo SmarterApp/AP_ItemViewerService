@@ -67,12 +67,12 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
           class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
         <property name="defaultTargetUrl" value="/"/>
     </bean>
-    <!--
-    Use the following for interpreting RelayState coming from unsolicited response as redirect URL:
+    
+    <!-- Use the following for interpreting RelayState coming from unsolicited response as redirect URL:
     <bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">
        <property name="defaultTargetUrl" value="/" />
-    </bean>
-    -->
+    </bean>-->
+    
 
     <!-- Handler deciding where to redirect user after failed login -->
     <bean id="failureRedirectHandler"
@@ -137,9 +137,9 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
             <bean class="org.springframework.security.saml.metadata.MetadataGenerator">
                 <property name="entityId" value="item-viewer-service"/>
                 <!-- UPDATE HERE -->
-                <!-- <property name="entityBaseURL" value="https://interimivs.smarterbalanced.org"/> --> 
+                <property name="entityBaseURL" value="https://interimivs.smartertoolsforteachers.org"/> 
                 <!-- <property name="entityBaseURL" value="https://interimivs-stage.smarterbalanced.org"/> -->
-                <property name="entityBaseURL" value="https://localhost:8443"/>
+                <!-- <property name="entityBaseURL" value="https://localhost:8443"/> -->
                 
                 <!-- <property name="extendedMetadata">
                     <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
@@ -203,9 +203,9 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
                 <bean class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider">
                     <constructor-arg>
                     	<!-- UPDATE HERE -->
-                        <!-- <value type="java.io.File">classpath:/metadata/okta.xml</value> -->
+                        <value type="java.io.File">classpath:/metadata/okta.xml</value>
                         <!-- <value type="java.io.File">classpath:/metadata/okta-stage.xml</value> -->                        
-                        <value type="java.io.File">classpath:/metadata/okta-local.xml</value>
+                        <!-- <value type="java.io.File">classpath:/metadata/okta-local.xml</value> -->
                     </constructor-arg>
                     <property name="parserPool" ref="parserPool"/>
                 </bean>
@@ -225,10 +225,16 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
     </bean>
 
     <!-- Specifies that we want to use the our own user detail service rather than the default saml detail service -->
-    <bean id="samlUserDetailService" class="org.smarterbalanced.itemviewerservice.web.controllers.UserDetailsServiceImpl" />
+    <bean id="samlUserDetailService"
+    	class="org.smarterbalanced.itemviewerservice.web.controllers.UserDetailsServiceImpl" />
 
-	<!-- Provider of default SAML Context -->
-    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
+    <!-- Provider of default SAML Context -->
+	<!--  -->
+    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl">
+    	<property name="storageFactory">
+    		<bean class="org.springframework.security.saml.storage.EmptyStorageFactory"/>
+    	</property>
+    </bean>
 
     <!-- Processing filter for WebSSO profile messages -->
     <bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">

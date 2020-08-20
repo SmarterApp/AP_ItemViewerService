@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<md:EntityDescriptor entityID="http://www.okta.com/exk4tst9lsVXqmeu1357" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
-<md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
-<md:KeyDescriptor use="signing">
-<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
-<ds:X509Data>
-<ds:X509Certificate>MIIDrjCCApagAwIBAgIGAWnp+fcJMA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQGEwJVUzETMBEG
+<?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor entityID="http://www.okta.com/exk4tst9lsVXqmeu1357" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"><md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"><md:KeyDescriptor use="signing"><ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:X509Data><ds:X509Certificate>MIIDrjCCApagAwIBAgIGAWnp+fcJMA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQGEwJVUzETMBEG
 A1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzENMAsGA1UECgwET2t0YTEU
 MBIGA1UECwwLU1NPUHJvdmlkZXIxGDAWBgNVBAMMD3NtYXJ0ZXJiYWxhbmNlZDEcMBoGCSqGSIb3
 DQEJARYNaW5mb0Bva3RhLmNvbTAeFw0xOTA0MDQyMDEwMDZaFw0yOTA0MDQyMDExMDZaMIGXMQsw
@@ -20,12 +14,4 @@ AAOCAQEAYb489HMIYJYf8r+QbLXyZ4gtvvKyLkyb8kwd5XaTt/Bw6rsEve5BI831DSUDEU/0VM0N
 giXIjT1RuZ3B7tx17BLqUUWe8ouVnhVoeBzGPpKRZTylWuS2v9F4Eeu10YxNa+YwuYtIw+/FcbBb
 tIZzGKndf9bHmNzVWq61taql0inOLAH+Gh2ujz9IYbIE/gyfE7xHunV9dy3jvYpb5ZVQFAvTRBGd
 cRUErPRZd9QXR8LmIey7DBo68IWx50UopXgcuOUT+ka95d5Va7TuXtm1bybHGjfkIg9107uBHaxj
-G/fphhEOgx/MR+TwI2RisppzOdSA+ROzct9F7WFBi4nwPQ==</ds:X509Certificate>
-</ds:X509Data>
-</ds:KeyInfo>
-</md:KeyDescriptor>
-<md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
-<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.smarterbalanced.org/app/smarterbalancedassessmentconsortium_ivs_1/exk4tst9lsVXqmeu1357/sso/saml"/>
-<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.smarterbalanced.org/app/smarterbalancedassessmentconsortium_ivs_1/exk4tst9lsVXqmeu1357/sso/saml"/>
-</md:IDPSSODescriptor>
-</md:EntityDescriptor>
+G/fphhEOgx/MR+TwI2RisppzOdSA+ROzct9F7WFBi4nwPQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo></md:KeyDescriptor><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat><md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.smarterbalanced.org/app/smarterbalancedassessmentconsortium_ivs_1/exk4tst9lsVXqmeu1357/sso/saml"/><md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.smarterbalanced.org/app/smarterbalancedassessmentconsortium_ivs_1/exk4tst9lsVXqmeu1357/sso/saml"/></md:IDPSSODescriptor></md:EntityDescriptor>
