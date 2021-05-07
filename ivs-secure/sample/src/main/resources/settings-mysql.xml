@@ -18,7 +18,7 @@
 	<entry key="tds.itemPreview.passageLayout"></entry>
 	<entry key="tds.itemPreview.configCache.minutes">0</entry>
 	<entry key="tds.itemPreview.configCache.id"></entry>
-	<entry key="iris.ContentPath">/home/tomcat7/content/</entry>
+	<entry key="iris.ContentPath">/Users/alexdean/content/</entry>
 	<!-- <entry key="iris.ContentPath">D:\content\</entry>-->
 	<!-- URL for the Dictionary API used for the Dictionary and Thesaurus accommodations -->
 	<entry key="iris.DictionaryUrl">https://tds.smarterbalanced.org/Dictionary/</entry>

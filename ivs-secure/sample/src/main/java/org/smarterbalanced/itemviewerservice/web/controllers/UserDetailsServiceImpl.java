@@ -82,7 +82,6 @@ public class UserDetailsServiceImpl implements SAMLUserDetailsService {
     		}
 
     		//System.out.println("User roles for : " + username + ": " + userRoles);
-    		
     		LOGGER.info("User roles for : " + username + ": " + userRoles);
 
         	if(isUserAuthorized) {

@@ -10,6 +10,7 @@ WORKDIR /usr/local/tomcat/
 
 COPY context.xml ./conf
 
+
 RUN rm ./conf/server.xml
 COPY server.xml ./conf
 COPY .keystore ./conf
@@ -22,4 +23,3 @@ RUN mv ./webapps/itemviewerservice.war ./webapps/$contextName.war
 EXPOSE 8080
 
 ENTRYPOINT ["catalina.sh", "run"]
-
