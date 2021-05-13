@@ -7,6 +7,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+import org.springframework.core.annotation.Order;
+
+@Component
+@Order(1)
 public class SecurityFilter implements javax.servlet.Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
@@ -19,12 +24,16 @@ public class SecurityFilter implements javax.servlet.Filter {
         // wrap the response
         response = new SecureCookieSetter((HttpServletResponse)response);
 
+        System.out.println("Getting the request session id...");
         // touch the session
         ((HttpServletRequest) request).getSession();
+        System.out.println("  Got the request session id: " + ((HttpServletRequest)request).getSession().getId());
 
+        System.out.println("Setting the JSESSIONID header cookie to have SameSite=None;Secure;");
         // overwriting the cookie with Secure and HttpOnly attribute set
         ((HttpServletResponse)response).setHeader("Set-Cookie", "JSESSIONID=" + ((HttpServletRequest)request).getSession().getId() + ";Path=/;Secure;SameSite=None;");
 
+        System.out.println("  JSESSIONID header cookie has been set with SameSite=None;Secure;");
         chain.doFilter(request, response);
     }
 

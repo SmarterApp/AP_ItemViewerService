@@ -213,4 +213,5 @@
         <welcome-file>IrisPages/itemRender.xhtml</welcome-file>
     </welcome-file-list>
     <display-name>Item Viewer Service - Secure</display-name>
+    <absolute-ordering/>
 </web-app>

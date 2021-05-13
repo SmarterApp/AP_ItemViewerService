@@ -154,6 +154,7 @@
     
     <!-- All filters -->
     <!-- This filter creates a proxy for the request object. It needs to precede requestInitializerFilter -->
+
     <filter>
         <filter-name>requestInitializerFilter</filter-name>
         <filter-class>AIR.Common.Web.Session.HttpRequestLoggerInitializerFilter</filter-class>
@@ -205,14 +206,6 @@
         <url-pattern>*.xhtml</url-pattern>
     </filter-mapping>
     <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter>
         <filter-name>SecurityFilter</filter-name>
         <filter-class>org.smarterbalanced.itemviewerservice.web.controllers.SecurityFilter</filter-class>
     </filter>
@@ -220,6 +213,15 @@
         <filter-name>SecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 
     
     <context-param>

@@ -141,7 +141,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
                 <!-- UPDATE HERE -->
                 <!-- <property name="entityBaseURL" value="https://interimivs.smartertoolsforteachers.org"/> -->
                 <property name="entityBaseURL" value="https://interimivs-stage.smarterbalanced.org"/>
-                <!--<property name="entityBaseURL" value="https://localhost:8443"/>-->
+                <!-- <property name="entityBaseURL" value="https://localhost:8443"/>-->
                 
                 <!-- <property name="extendedMetadata">
                     <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
