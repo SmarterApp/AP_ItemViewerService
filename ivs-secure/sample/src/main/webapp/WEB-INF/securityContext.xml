@@ -140,7 +140,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
                 <!--<property name="entityId" value="https://localhost:8443/saml/metadata"/>-->
                 <!-- UPDATE HERE -->
                 <!-- <property name="entityBaseURL" value="https://interimivs.smartertoolsforteachers.org"/> -->
-                <property name="entityBaseURL" value="https://interimivs-stage.smarterbalanced.org"/>
+                <!-- <property name="entityBaseURL" value="https://interimivs-stage.smarterbalanced.org"/> -->
+                <property name="entityBaseURL" value="https://interimivs-uat.smarterbalanced.org"/>
                 <!-- <property name="entityBaseURL" value="https://localhost:8443"/>-->
                 
                 <!-- <property name="extendedMetadata">
@@ -206,7 +207,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.spri
                     <constructor-arg>
                     	<!-- UPDATE HERE -->
                         <!--<value type="java.io.File">classpath:/metadata/okta.xml</value>-->
-                        <value type="java.io.File">classpath:/metadata/okta-stage.xml</value>
+                        <!--<value type="java.io.File">classpath:/metadata/okta-stage.xml</value>-->
+                        <value type="java.io.File">classpath:/metadata/okta-uat.xml</value>
                         <!--<value type="java.io.File">classpath:/metadata/okta-local.xml</value>-->
                     </constructor-arg>
                     <property name="parserPool" ref="parserPool"/>
